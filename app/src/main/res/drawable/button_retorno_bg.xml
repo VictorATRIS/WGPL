@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:state_pressed="true">
+    <shape android:shape="rectangle">
+        <solid android:color="#FF5722" /> <!-- Color oscuro al presionar -->
+        <corners android:radius="12dp" />
+    </shape>
+</item>
+<item>
+    <shape android:shape="rectangle">
+        <solid android:color="#FFC0AC" /> <!-- Color naranja -->
+        <corners android:radius="12dp" />
+    </shape>
+</item>
+</selector>

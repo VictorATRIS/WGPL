@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F4FEFF"
+    android:padding="20dp">
+
+    <!-- Título del módulo -->
+    <TextView
+        android:id="@+id/txtNamemodule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FD4949"
+        android:elevation="4dp"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Delete Pallet"
+        android:textColor="#FDFDFD"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!-- Card principal con datos -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        android:backgroundTint="#FFFFFF">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <!-- Campo Área -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Location"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/editTextArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Set Location"
+                android:background="@drawable/back"
+                android:inputType="text"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Campo Master -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Master"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/editTextMaster"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Set Master"
+                android:background="@drawable/back"
+                android:inputType="text"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Mensaje o error -->
+    <TextView
+        android:id="@+id/lbl_Error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#D32F2F"
+        android:textStyle="italic"
+        android:gravity="end"
+        android:text=""
+        android:layout_marginTop="16dp"/>
+</LinearLayout>

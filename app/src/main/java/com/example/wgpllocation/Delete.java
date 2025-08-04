@@ -1,0 +1,213 @@
+package com.example.wgpllocation;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.InputType;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.symbol.emdk.EMDKManager;
+import com.symbol.emdk.barcode.BarcodeManager;
+import com.symbol.emdk.barcode.ScanDataCollection;
+import com.symbol.emdk.barcode.Scanner;
+import com.symbol.emdk.barcode.ScannerException;
+import com.symbol.emdk.barcode.ScannerResults;
+import com.symbol.emdk.barcode.StatusData;
+
+import java.util.ArrayList;
+
+public class Delete extends Activity  implements EMDKManager.EMDKListener, Scanner.StatusListener, Scanner.DataListener {
+    public String cadenaConexion;
+    public  Usuario usuario;
+    Conexion conexion;
+    private EMDKManager emdkManager = null;
+    private BarcodeManager barcodeManager = null;
+    private Scanner scanner = null;
+    private EditText textLocation, textMaster ;
+
+    @Override
+    protected void onCreate( Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.delete);
+        Intent intent =  getIntent();
+        iniciarElementos();
+        usuario =(Usuario) intent.getSerializableExtra("Usuario");
+        cadenaConexion = intent.getStringExtra("cadenaCon");
+        conexion = new Conexion(cadenaConexion);
+        EMDKManager.getEMDKManager(getApplicationContext(), this);
+
+        textLocation.setInputType(InputType.TYPE_NULL);
+        textMaster.setInputType(InputType.TYPE_NULL);
+    }
+
+    private void iniciarElementos(){
+        textLocation = findViewById(R.id.editTextArea);
+        textMaster = findViewById(R.id.editTextMaster);
+
+
+    }
+
+    @Override
+    public void onClosed() {
+        if (this.emdkManager != null) {
+            this.emdkManager.release();
+            this.emdkManager = null;
+        }
+    }
+
+    @Override
+    public void onOpened(EMDKManager emdkManager) {
+        this.emdkManager = emdkManager;
+        initBarcodeManager();
+        initScanner();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (this.emdkManager != null) {
+            barcodeManager = (BarcodeManager) this.emdkManager.getInstance(EMDKManager.FEATURE_TYPE.BARCODE);
+            initScanner();
+        }
+    }
+
+    @Override
+    public void onData(ScanDataCollection scanDataCollection) {
+        String dataStr = "";
+        if ((scanDataCollection != null) && (scanDataCollection.getResult() == ScannerResults.SUCCESS)) {
+            ArrayList<ScanDataCollection.ScanData> scanData = scanDataCollection.getScanData();
+            for (ScanDataCollection.ScanData data : scanData) {
+                dataStr = data.getData();
+            }
+            updateData(dataStr);
+        }
+    }
+
+    public void onStatus(StatusData statusData) {
+        StatusData.ScannerStates state = statusData.getState();
+        if (state == StatusData.ScannerStates.IDLE) {
+            try {
+                scanner.read();
+            } catch (ScannerException ignored) {
+            }
+        }
+    }
+
+    private void initBarcodeManager() {
+        barcodeManager = (BarcodeManager) emdkManager.getInstance(EMDKManager.FEATURE_TYPE.BARCODE);
+        if (barcodeManager == null) {
+            Toast.makeText(this, "Barcode scanning is not supported.", Toast.LENGTH_LONG).show();
+            finish();
+        }
+    }
+
+    private void initScanner() {
+        if (scanner == null) {
+            scanner = barcodeManager.getDevice(BarcodeManager.DeviceIdentifier.DEFAULT);
+            if (scanner != null) {
+                scanner.addDataListener(this);
+                scanner.addStatusListener(this);
+                scanner.triggerType = Scanner.TriggerType.HARD;
+                try {
+                    scanner.enable();
+                } catch (ScannerException e) {
+                    deInitScanner();
+                }
+            }
+        }
+    }
+
+    private void deInitScanner() {
+        if (scanner != null) {
+            try {
+                scanner.release();
+            } catch (Exception ignored) {
+            }
+            scanner = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (emdkManager != null) {
+            emdkManager.release();
+            emdkManager = null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            if (scanner != null) {
+                scanner.removeDataListener(this);
+                scanner.removeStatusListener(this);
+                scanner.disable();
+                scanner = null;
+            }
+        } catch (ScannerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void updateData(final String result) {
+        runOnUiThread(() -> {
+            try {
+
+                if (result.matches("[a-zA-Z]+\\d+")) {
+                    textLocation.setText(result);
+                    textMaster.setText("");
+                    return;
+                }
+
+                //Una vez lleno los campos ahora si ponemos hacer las validaciones
+                if (!textLocation.getText().toString().trim().equals("")) {
+                    textMaster.setText(result);
+                    //validamos que el master sea valido
+                    if (!conexion.masterValido(result)) {
+                        mensaje("Master no valido");
+                        textMaster.setText("");
+                        return;
+                    }
+                    if (!conexion.masterYaRegistrado(result,textLocation.getText().toString().trim())){
+                        mensaje("El pallet no coincide con el area que indicas");
+                        textMaster.setText("");
+                        return;
+
+                    }
+
+                 if(conexion.eliminarDatosPallet(textLocation.getText().toString().trim(),result)){
+                     mensaje("Los datos del pallet fueron eliminados correctamente");
+                     textLocation.setText("");
+                     textMaster.setText("");
+                 }
+
+
+                }
+
+
+            } catch (Exception e) {
+                mensaje(e.getMessage());
+            }
+        });
+    }
+    public void mensaje(String mensaje) {
+
+
+        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+        dlgAlert.setMessage(mensaje);
+        dlgAlert.setTitle("WGPL LOCATION");
+        dlgAlert.create().show();
+
+    }
+}
