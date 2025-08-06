@@ -123,7 +123,7 @@ public class Conexion {
             ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
             if (resultSet.next()) {
 
-                mensaje = "Espacio libre Linea:" + resultSet.getString("Linea") + " Locacion:" + resultSet.getString("Location");
+                mensaje = "Espacio libre:" + resultSet.getString("Linea") + "/" + resultSet.getString("Location");
 
 
             }else {
@@ -367,8 +367,52 @@ public class Conexion {
         return existe;
 
     }
+    public boolean necesitaASN() throws SQLException {
+        boolean existe = false;
+        try {
+            initConexion(); // Iniciamos la conexion de la base da datos
+            String query = "Select Estatus from ERP_CTRL_WGPL_VALIDA_ASN where Estatus = '1'";
+            ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
+            if (resultSet.next()) {
+                existe = true;
+            }
 
 
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION");
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+
+        }
+        return existe;
+
+    }
+    public boolean masterConASN(String pallet) throws SQLException {
+        boolean existe = false;
+        try {
+            initConexion(); // Iniciamos la conexion de la base da datos
+            String query = "SP_CTRL_WGPL_VALIDA_MASTER_ASN'" + pallet.trim() + "'";
+            ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
+            if (resultSet.next()) {
+                existe = true;
+            }
+
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION");
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+
+        }
+        return existe;
+
+    }
 
 
 }

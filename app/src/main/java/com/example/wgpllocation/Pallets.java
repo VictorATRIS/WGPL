@@ -6,7 +6,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,8 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
     private Scanner scanner = null;
     private EditText textLinea,textLocation, textMaster ;
     private TextView lineaLabel;
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,8 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
         textLocation = findViewById(R.id.editTextArea);
         textMaster = findViewById(R.id.editTextMaster);
         lineaLabel = findViewById(R.id.lbl_linea);
+        progressBar = findViewById(R.id.progressBar);
+
 
     }
     @Override
@@ -162,124 +168,147 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
     }
 
     @SuppressLint("SetTextI18n")
+
+
     public void updateData(final String result) {
-        runOnUiThread(() -> {
+
+
+        if (scanner != null && scanner.isEnabled()) {
             try {
+                scanner.disable(); // Esto detiene la lectura
+            } catch (ScannerException e) {
+                mensaje("Error al desactivar escáner: " + e.getMessage());
+            }
+        }
+
+        runOnUiThread(() -> {
 
 
+            try {
+                if (scanner != null && scanner.isEnabled()) {
+                    try {
+                        scanner.disable(); // Esto detiene la lectura
+                    } catch (ScannerException e) {
+                        mensaje("Error al desactivar escáner: " + e.getMessage());
+                    }
+                }
 
-
-             if (result.matches("[a-zA-Z]+"))
-             {
-                 textLinea.setText(result);
-                 textLocation.setText("");
-                 textMaster.setText("");
-
-                 return;
-
-             }
-                if (result.matches("[a-zA-Z]+\\d+"))
-                {
-                    if(!result.startsWith(textLinea.getText().toString().trim())){
-                        mensaje("Esta localizacion no pertenece a la linea que escaneaste");
+                //Validamos que escaneen la linea
+                if (result.matches("[a-zA-Z]+")) {
+                    textLinea.setText(result);
+                    textLocation.setText("");
+                    textMaster.setText("");
+                    return;
+                }
+                //Validamos que escanean el area, esto tiene que ser en orden
+                if (result.matches("[a-zA-Z]+\\d+")) {
+                    if (!result.startsWith(textLinea.getText().toString().trim())) {
+                        mensaje("Esta localización no pertenece a la línea que escaneaste");
                         return;
-
                     }
                     textLocation.setText(result);
                     textMaster.setText("");
                     return;
-
                 }
-
+                // Los Master tiene que empezar por 4S
                 if (!result.startsWith("4S")) {
                     mensaje("Dato incorrecto");
                     return;
                 }
+                //Esta parte es cuando estan en el area de teminado y ya van y a guardar el pallet, para que les diga las areas disponibles
+                if (textLinea.getText().toString().equals("") && textLocation.getText().toString().trim().equals("")) {
 
-                if (textLinea.getText().toString().equals("") && textLocation.getText().toString().trim().equals("")){
-                    if(!conexion.masterValido(result)){
-                        mensaje("Master no valido");
+                    if (!conexion.masterValido(result)) {
+                        mensaje("Master no válido");
                         textMaster.setText("");
+                        return;
                     }
-                    else {
-                        lineaLabel.setText(conexion.getLocacionPallet(result));
+                    if (conexion.necesitaASN()) {
+                        if (!conexion.masterConASN(result)) {
+                            mensaje("Este Master no tiene ASN, favor de asignar uno");
+                            textMaster.setText("");
+                            return;
+                        }
+
                     }
+                    lineaLabel.setText(conexion.getLocacionPallet(result));
                     textMaster.setText(result);
                     return;
 
                 }
-
-
-                 //Una vez lleno los campos ahora si ponemos hacer las validaciones
-                if (!textLinea.getText().toString().equals("")  && !textLocation.getText().toString().trim().equals("")){
+                //Si ya empezo a llenar los campos
+                if (!textLinea.getText().toString().equals("") && !textLocation.getText().toString().trim().equals("")) {
                     textMaster.setText(result);
 
-
-                    //validamos que el master sea valido
-                    if(!conexion.masterValido(result)){
-                        mensaje("Master no valido");
+                    if (!conexion.masterValido(result)) {
+                        mensaje("Master no válido");
                         textMaster.setText("");
                         return;
                     }
 
-                    if(!conexion.plantaCorrecta(result,textLocation.getText().toString().trim())){
+                    if (conexion.necesitaASN()) {
+                        if (!conexion.masterConASN(result)) {
+                            mensaje("Este Master no tiene ASN, favor de asignar uno");
+                            textMaster.setText("");
+                            return;
+                        }
+
+                    }
+
+                    if (!conexion.plantaCorrecta(result, textLocation.getText().toString().trim())) {
                         mensaje("Este pallet es de otra planta, este no es su lugar");
                         textMaster.setText("");
                         return;
                     }
-                    if(conexion.masterYaRegistrado(result,textLocation.getText().toString().trim())){
 
-                      if(conexion.registrarDatos(textLocation.getText().toString().trim(), result,usuario.getUsuarioNick())) {
-
-                          mensaje("Pallet guardado correctamente");
-
-                          textLocation.setText("");
-                          textLinea.setText("");
-                          textMaster.setText("");
-                          lineaLabel.setText("");
-                          return;
-                      }
+                    if (conexion.masterYaRegistrado(result, textLocation.getText().toString().trim())) {
+                        if (conexion.registrarDatos(textLocation.getText().toString().trim(), result, usuario.getUsuarioNick())) {
+                            mensaje("Pallet guardado correctamente");
+                            textLocation.setText("");
+                            textLinea.setText("");
+                            textMaster.setText("");
+                            lineaLabel.setText("");
+                            return;
+                        }
                     }
 
-                    if ( conexion.lugarOcupado(textLocation.getText().toString().trim()) ){
-                        mensaje("Esta localizacion ya esta ocupada");
+                    if (conexion.lugarOcupado(textLocation.getText().toString().trim())) {
+                        mensaje("Esta localización ya está ocupada");
                         return;
                     }
 
-                    if ( conexion.validaMasterRegistrado(result) ){
-                        mensaje("Master ya registrado en otra localizacion");
+                    if (conexion.validaMasterRegistrado(result)) {
+                        mensaje("Master ya registrado en otra localización");
+                        textMaster.setText("");
                         return;
                     }
-                    if(conexion.registrarDatos(textLocation.getText().toString().trim(), result,usuario.getUsuarioNick())) {
 
+                    if (conexion.registrarDatos(textLocation.getText().toString().trim(), result, usuario.getUsuarioNick())) {
                         mensaje("Pallet guardado correctamente");
                         textLocation.setText("");
                         textLinea.setText("");
                         textMaster.setText("");
                         lineaLabel.setText("");
                     }
-
-
-
-
                 }
 
-
-
             } catch (Exception e) {
-               mensaje(e.getMessage());
+                mensaje(e.getMessage());
+            } finally {
+
+                if (scanner != null && !scanner.isEnabled()) {
+                    try {
+                        scanner.enable(); // Vuelve a permitir escaneo
+                    } catch (ScannerException e) {
+                        mensaje("Error al activar escáner: " + e.getMessage());
+                    }
+                }
+
             }
         });
     }
 
-    public void guardaRegistros (String data) {
-        try {
 
-        }catch (Exception ex) {
-            mensaje(ex.getMessage());
-        }
-
-    }
     public void mensaje(String mensaje) {
 
 
