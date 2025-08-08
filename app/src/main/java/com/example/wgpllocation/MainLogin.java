@@ -80,7 +80,11 @@ public class MainLogin extends Activity {
                             try {
                                 //Ya cuando el usuario sea correcto abrimos el siguiente activity y le enviamos el usuario y nombre del usuario
                                 try {
+                                    if (!usuario.getUsuarioGrupo().equals("99")) {
                                     intent = new Intent(MainLogin.this, Menu.class);
+                                    }else {
+                                        intent = new Intent(MainLogin.this, MenuCalidad.class);
+                                    }
                                 }catch (Exception ex){
                                     ex.printStackTrace();
                                 }

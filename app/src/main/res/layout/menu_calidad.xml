@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".MainLogin">
+
+    <TextView
+        android:id="@+id/textUsuario2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#FBA664"
+        android:padding="16dp"
+        android:text="Menu"
+        android:textColor="#0F0E0E"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:elevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnEnvio"
+        android:layout_width="0dp"
+        android:layout_height="68dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_envio"
+        android:drawableStart="@drawable/icons8_cajas_30"
+        android:padding="16dp"
+        android:text="Recived"
+        android:textColor="#E3E5E6"
+        android:textSize="19sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textUsuario2" />
+
+    <Button
+        android:id="@+id/btnEmbarque"
+        android:layout_width="0dp"
+        android:layout_height="67dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_embarque"
+        android:drawableStart="@drawable/buscarr"
+        android:padding="16dp"
+        android:text="Return Master"
+        android:textColor="#2C3E50"
+        android:textSize="19sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnEnvio" />
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/logo_logintns"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="44dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/cerrarr"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

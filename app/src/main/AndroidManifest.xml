@@ -68,9 +68,21 @@
             android:name="com.example.wgpllocation.Delete"    android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             >
-
-
-
+        </activity>
+        <activity
+            android:name="com.example.wgpllocation.MenuCalidad"    android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            >
+        </activity>
+        <activity
+            android:name="com.example.wgpllocation.ReciboCalidad"    android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            >
+        </activity>
+        <activity
+            android:name="com.example.wgpllocation.SalidaCalidad"    android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            >
         </activity>
     </application>
 </manifest>

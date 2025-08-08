@@ -13,12 +13,12 @@
         android:id="@+id/txtNamemodule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#041F8E"
+        android:background="#66BBBA"
         android:elevation="4dp"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Pallet Storage"
-        android:textColor="@color/white"
+        android:text="Return Pallet"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -38,27 +38,6 @@
             android:padding="16dp">
 
 
-
-            <!-- Campo Área -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Location"
-                android:textColor="#000000"
-                android:textStyle="bold"
-                android:textSize="14sp"/>
-
-            <EditText
-                android:id="@+id/editTextArea"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Set Locacion"
-                android:background="@drawable/back"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
 
             <!-- Campo Master -->
             <TextView
@@ -80,27 +59,17 @@
                 android:textColor="#000000"
                 android:textSize="16sp"/>
 
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-
+    <!-- Mensaje o error -->
     <TextView
-        android:id="@+id/lbl_linea"
-        android:layout_width="367dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="16dp"
-        android:gravity="start"
-        android:text=""
-        android:textColor="#2F3FD3"
-        android:textSize="20sp"
-        android:textStyle="italic" />
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
+        android:id="@+id/lbl_Error"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:indeterminate="true"/>
+        android:textColor="#D32F2F"
+        android:textStyle="italic"
+        android:gravity="end"
+        android:text=""
+        android:layout_marginTop="16dp"/>
 </LinearLayout>

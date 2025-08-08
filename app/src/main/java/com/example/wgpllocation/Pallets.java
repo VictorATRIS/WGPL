@@ -30,7 +30,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
     private EMDKManager emdkManager = null;
     private BarcodeManager barcodeManager = null;
     private Scanner scanner = null;
-    private EditText textLinea,textLocation, textMaster ;
+    private EditText textLocation, textMaster ;
     private TextView lineaLabel;
     private ProgressBar progressBar;
 
@@ -45,12 +45,12 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
         conexion = new Conexion(cadenaConexion);
         EMDKManager.getEMDKManager(getApplicationContext(), this);
 
-        textLinea.setInputType(InputType.TYPE_NULL);
+
         textLocation.setInputType(InputType.TYPE_NULL);
         textMaster.setInputType(InputType.TYPE_NULL);
     }
     private void iniciarElementos(){
-        textLinea = findViewById(R.id.editTextFila);
+
         textLocation = findViewById(R.id.editTextArea);
         textMaster = findViewById(R.id.editTextMaster);
         lineaLabel = findViewById(R.id.lbl_linea);
@@ -194,18 +194,16 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                 }
 
                 //Validamos que escaneen la linea
+                /*
                 if (result.matches("[a-zA-Z]+")) {
                     textLinea.setText(result);
                     textLocation.setText("");
                     textMaster.setText("");
                     return;
                 }
+                */
                 //Validamos que escanean el area, esto tiene que ser en orden
                 if (result.matches("[a-zA-Z]+\\d+")) {
-                    if (!result.startsWith(textLinea.getText().toString().trim())) {
-                        mensaje("Esta localización no pertenece a la línea que escaneaste");
-                        return;
-                    }
                     textLocation.setText(result);
                     textMaster.setText("");
                     return;
@@ -216,7 +214,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     return;
                 }
                 //Esta parte es cuando estan en el area de teminado y ya van y a guardar el pallet, para que les diga las areas disponibles
-                if (textLinea.getText().toString().equals("") && textLocation.getText().toString().trim().equals("")) {
+                if ( textLocation.getText().toString().trim().equals("")) {
 
                     if (!conexion.masterValido(result)) {
                         mensaje("Master no válido");
@@ -237,7 +235,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
 
                 }
                 //Si ya empezo a llenar los campos
-                if (!textLinea.getText().toString().equals("") && !textLocation.getText().toString().trim().equals("")) {
+                if (!textLocation.getText().toString().trim().equals("")) {
                     textMaster.setText(result);
 
                     if (!conexion.masterValido(result)) {
@@ -262,10 +260,15 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     }
 
                     if (conexion.masterYaRegistrado(result, textLocation.getText().toString().trim())) {
+                        if(conexion.palletRegistrosQA(result.trim(),"R")){
+                            mensaje("Calidad aun no registro una salida para este pallet");
+                            textMaster.setText("");
+                            return;
+
+                        }
                         if (conexion.registrarDatos(textLocation.getText().toString().trim(), result, usuario.getUsuarioNick())) {
                             mensaje("Pallet guardado correctamente");
                             textLocation.setText("");
-                            textLinea.setText("");
                             textMaster.setText("");
                             lineaLabel.setText("");
                             return;
@@ -286,7 +289,6 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     if (conexion.registrarDatos(textLocation.getText().toString().trim(), result, usuario.getUsuarioNick())) {
                         mensaje("Pallet guardado correctamente");
                         textLocation.setText("");
-                        textLinea.setText("");
                         textMaster.setText("");
                         lineaLabel.setText("");
                     }
