@@ -164,8 +164,11 @@ public class Delete extends Activity  implements EMDKManager.EMDKListener, Scann
         runOnUiThread(() -> {
             try {
 
-                if (result.matches("[a-zA-Z]+\\d+")) {
-                    textLocation.setText(result);
+                if (result.startsWith("L") && result.endsWith("T")) {
+                    // Elimina el primer y último carácter
+                    String trimmedResult = result.substring(1, result.length() - 1);
+
+                    textLocation.setText(trimmedResult);
                     textMaster.setText("");
                     return;
                 }

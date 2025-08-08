@@ -166,12 +166,14 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
         runOnUiThread(() -> {
             try {
 
-                if (result.matches("[a-zA-Z]+\\d+")) {
-                    textLocation.setText(result);
+                if (result.startsWith("L") && result.endsWith("T")) {
+                    // Elimina el primer y último carácter
+                    String trimmedResult = result.substring(1, result.length() - 1);
+
+                    textLocation.setText(trimmedResult);
                     textMaster.setText("");
                     return;
                 }
-
                 //Una vez lleno los campos ahora si ponemos hacer las validaciones
                 if (!textLocation.getText().toString().trim().equals("")) {
                     textMaster.setText(result);
