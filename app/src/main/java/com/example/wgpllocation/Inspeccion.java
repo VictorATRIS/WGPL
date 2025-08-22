@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
@@ -29,7 +30,7 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
     private BarcodeManager barcodeManager = null;
     private Scanner scanner = null;
     private EditText textLocation, textMaster ;
-
+    MediaPlayer sonidoError,sonidoCorrecto = null;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +41,8 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
         cadenaConexion = intent.getStringExtra("cadenaCon");
         conexion = new Conexion(cadenaConexion);
         EMDKManager.getEMDKManager(getApplicationContext(), this);
-
+        sonidoError = MediaPlayer.create(this, R.raw.error);
+        sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);
         textLocation.setInputType(InputType.TYPE_NULL);
         textMaster.setInputType(InputType.TYPE_NULL);
     }
@@ -181,11 +183,19 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
                     if (!conexion.masterValido(result)) {
                         mensaje("Master no valido");
                         textMaster.setText("");
+                        sonidoError.start();
                         return;
                     }
+                  if(!conexion.necesitaReinspeccion(result)){
+                      mensaje("El pallet no tiene requisiones de reinspeccion");
+                      textMaster.setText("");
+                      sonidoError.start();
+                      return;
+                  }
                   if (!conexion.masterYaRegistrado(result,textLocation.getText().toString().trim())){
                       mensaje("El pallet no coincide con el area que indicas");
                       textMaster.setText("");
+                      sonidoError.start();
                       return;
 
                   }
@@ -194,6 +204,7 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
                       mensaje("Este pallet ya tiene estatus de reinspeccion");
                       textLocation.setText("");
                       textMaster.setText("");
+                      sonidoError.start();
                       return;
                   }
 
@@ -202,6 +213,7 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
                         mensaje("Te puedes llevar el pallet a reinspeccion sin problema");
                         textLocation.setText("");
                         textMaster.setText("");
+                        sonidoCorrecto.start();
 
                     }
 

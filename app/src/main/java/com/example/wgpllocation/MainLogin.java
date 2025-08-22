@@ -48,8 +48,8 @@ public class MainLogin extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-          textUsuario.setText("victor.avalos");
-          textContrasena.setText("321");
+          //textUsuario.setText("victor.avalos");
+         // textContrasena.setText("321");
         //En esta variable esta la cadena que usaremos para la conexion a la base de datos
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);

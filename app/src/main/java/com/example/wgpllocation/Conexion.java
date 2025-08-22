@@ -372,7 +372,7 @@ public class Conexion {
         boolean existe = false;
         try {
             initConexion(); // Iniciamos la conexion de la base da datos
-            String query = "select Area from ERP_CTRL_WGPL_LOCATIONS where master = '" + master.trim() + "' and estatus = '-1'";
+            String query = "SP_CTRL_WGPL_REINSPECCION_POR_PALLET'" + master.trim() + "'";
             ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
             if (resultSet.next()) {
                 existe = true;
@@ -468,6 +468,30 @@ public class Conexion {
         try {
             initConexion(); // Iniciamos la conexion de la base da datos
             String query = "SP_CTRL_WGPL_CONSULTA_SALIDAS_ENTRADAS_QA '" + master.trim() + "', '" + tipo.trim() + "'";
+            ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
+            if (resultSet.next()) {
+                existe = true;
+            }
+
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION");
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+
+        }
+        return existe;
+
+    }
+
+    public boolean necesitaReinspeccion(String pallet) throws SQLException {
+        boolean existe = false;
+        try {
+            initConexion(); // Iniciamos la conexion de la base da datos
+            String query = "SP_CTRL_WGPL_VALIDA_SORTING'" + pallet.trim() + "'";
             ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
             if (resultSet.next()) {
                 existe = true;

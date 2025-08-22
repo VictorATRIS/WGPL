@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
@@ -27,7 +28,7 @@ public class Delete extends Activity  implements EMDKManager.EMDKListener, Scann
     private BarcodeManager barcodeManager = null;
     private Scanner scanner = null;
     private EditText textLocation, textMaster ;
-
+    MediaPlayer sonidoError,sonidoCorrecto = null;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +39,8 @@ public class Delete extends Activity  implements EMDKManager.EMDKListener, Scann
         cadenaConexion = intent.getStringExtra("cadenaCon");
         conexion = new Conexion(cadenaConexion);
         EMDKManager.getEMDKManager(getApplicationContext(), this);
-
+        sonidoError = MediaPlayer.create(this, R.raw.error);
+        sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);
         textLocation.setInputType(InputType.TYPE_NULL);
         textMaster.setInputType(InputType.TYPE_NULL);
     }
@@ -180,11 +182,13 @@ public class Delete extends Activity  implements EMDKManager.EMDKListener, Scann
                     if (!conexion.masterValido(result)) {
                         mensaje("Master no valido");
                         textMaster.setText("");
+                        sonidoError.start();
                         return;
                     }
                     if (!conexion.masterYaRegistrado(result,textLocation.getText().toString().trim())){
                         mensaje("El pallet no coincide con el area que indicas");
                         textMaster.setText("");
+                        sonidoError.start();
                         return;
 
                     }
@@ -193,6 +197,7 @@ public class Delete extends Activity  implements EMDKManager.EMDKListener, Scann
                      mensaje("Los datos del pallet fueron eliminados correctamente");
                      textLocation.setText("");
                      textMaster.setText("");
+                     sonidoCorrecto.start();
                  }
 
 

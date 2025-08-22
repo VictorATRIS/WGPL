@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -33,6 +34,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
     private EditText textLocation, textMaster ;
     private TextView lineaLabel;
     private ProgressBar progressBar;
+    MediaPlayer sonidoError,sonidoCorrecto = null;
 
     @Override
     protected void onCreate( Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
         usuario =(Usuario) intent.getSerializableExtra("Usuario");
         cadenaConexion = intent.getStringExtra("cadenaCon");
         conexion = new Conexion(cadenaConexion);
+        sonidoError = MediaPlayer.create(this, R.raw.error);
+        sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);
         EMDKManager.getEMDKManager(getApplicationContext(), this);
 
 
@@ -214,6 +218,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                 // Los Master tiene que empezar por 4S
                 if (!result.startsWith("4S")) {
                     mensaje("Dato incorrecto");
+                    sonidoError.start();
                     return;
                 }
                 //Esta parte es cuando estan en el area de teminado y ya van y a guardar el pallet, para que les diga las areas disponibles
@@ -222,12 +227,20 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     if (!conexion.masterValido(result)) {
                         mensaje("Master no válido");
                         textMaster.setText("");
+                        sonidoError.start();
+                        return;
+                    }
+                    if (conexion.necesitaReinspeccion(result)) {
+                        mensaje("Por favor lleve este pallet a la area de Reinspeccion ");
+                        textMaster.setText("");
+                        sonidoError.start();
                         return;
                     }
                     if (conexion.necesitaASN()) {
                         if (!conexion.masterConASN(result)) {
                             mensaje("Este Master no tiene ASN, favor de asignar uno");
                             textMaster.setText("");
+                            sonidoError.start();
                             return;
                         }
 
@@ -243,7 +256,14 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
 
                     if (!conexion.masterValido(result)) {
                         mensaje("Master no válido");
+                        sonidoError.start();
                         textMaster.setText("");
+                        return;
+                    }
+                    if (conexion.necesitaReinspeccion(result)) {
+                        mensaje("Por favor lleve este pallet a la area de Reinspeccion ");
+                        textMaster.setText("");
+                        sonidoError.start();
                         return;
                     }
 
@@ -251,6 +271,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                         if (!conexion.masterConASN(result)) {
                             mensaje("Este Master no tiene ASN, favor de asignar uno");
                             textMaster.setText("");
+                            sonidoError.start();
                             return;
                         }
 
@@ -259,6 +280,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     if (!conexion.plantaCorrecta(result, textLocation.getText().toString().trim())) {
                         mensaje("Este pallet es de otra planta, este no es su lugar");
                         textMaster.setText("");
+                        sonidoError.start();
                         return;
                     }
 
@@ -266,6 +288,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                         if(conexion.palletRegistrosQA(result.trim(),"R")){
                             mensaje("Calidad aun no registro una salida para este pallet");
                             textMaster.setText("");
+                            sonidoError.start();
                             return;
 
                         }
@@ -274,18 +297,21 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                             textLocation.setText("");
                             textMaster.setText("");
                             lineaLabel.setText("");
+                            sonidoCorrecto.start();
                             return;
                         }
                     }
 
                     if (conexion.lugarOcupado(textLocation.getText().toString().trim())) {
                         mensaje("Esta localización ya está ocupada");
+                        sonidoError.start();
                         return;
                     }
 
                     if (conexion.validaMasterRegistrado(result)) {
                         mensaje("Master ya registrado en otra localización");
                         textMaster.setText("");
+                        sonidoError.start();
                         return;
                     }
 
@@ -294,6 +320,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                         textLocation.setText("");
                         textMaster.setText("");
                         lineaLabel.setText("");
+                        sonidoCorrecto.start();
                     }
                 }
 

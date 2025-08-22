@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
@@ -27,7 +28,7 @@ public class ReciboCalidad extends Activity implements EMDKManager.EMDKListener,
     private BarcodeManager barcodeManager = null;
     private Scanner scanner = null;
     private EditText  textMaster ;
-
+    MediaPlayer sonidoError,sonidoCorrecto = null;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +39,8 @@ public class ReciboCalidad extends Activity implements EMDKManager.EMDKListener,
         cadenaConexion = intent.getStringExtra("cadenaCon");
         conexion = new Conexion(cadenaConexion);
         EMDKManager.getEMDKManager(getApplicationContext(), this);
-
+        sonidoError = MediaPlayer.create(this, R.raw.error);
+        sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);
         textMaster.setInputType(InputType.TYPE_NULL);
     }
 
@@ -162,19 +164,22 @@ public class ReciboCalidad extends Activity implements EMDKManager.EMDKListener,
         runOnUiThread(() -> {
             try {
                     textMaster.setText(result);
-                    if (!conexion.palletEnReinspeccionPerPallet(result.substring(2).trim())){
+                    if (!conexion.palletEnReinspeccionPerPallet(result)){
                         mensaje("A este master no se registro su salida a reinspeccion");
                         textMaster.setText("");
+                        sonidoError.start();
                         return;
                     }
-                 if(!conexion.palletRegistrosQA(result.trim(),"E")){
+                 if(conexion.palletRegistrosQA(result.trim(),"E")){
                      mensaje("Ya se registro una entrada para este pallet");
                      textMaster.setText(result);
+                     sonidoError.start();
                      return;
 
                  }
                   if(conexion.registraDatosReinspeccion(result,"E",usuario.getUsuarioNick())){
                       mensaje("Entrada registrada correctamente");
+                      sonidoCorrecto.start();
 
                 }
 
