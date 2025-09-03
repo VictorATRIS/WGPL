@@ -181,7 +181,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
             try {
                 scanner.disable(); // Esto detiene la lectura
             } catch (ScannerException e) {
-                mensaje("Error al desactivar escáner: " + e.getMessage());
+                mensaje("Error deactivating scanner: " + e.getMessage(), android.R.drawable.ic_delete);
             }
         }
 
@@ -193,7 +193,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     try {
                         scanner.disable(); // Esto detiene la lectura
                     } catch (ScannerException e) {
-                        mensaje("Error al desactivar escáner: " + e.getMessage());
+                        mensaje("Error deactivating scanner: " + e.getMessage(), android.R.drawable.ic_delete);
                     }
                 }
 
@@ -217,7 +217,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
 
                 // Los Master tiene que empezar por 4S
                 if (!result.startsWith("4S")) {
-                    mensaje("Dato incorrecto");
+                    mensaje("Incorrect data", android.R.drawable.ic_delete);
                     sonidoError.start();
                     return;
                 }
@@ -225,20 +225,31 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                 if ( textLocation.getText().toString().trim().equals("")) {
 
                     if (!conexion.masterValido(result)) {
-                        mensaje("Master no válido");
+                        mensaje("Invalid Master", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;
                     }
+
+
+                    if (conexion.necesitaASN()) {
+                        if (!conexion.masterConASN(result)) {
+                            mensaje("This Master does not have an ASN assigned. Please assign one.", android.R.drawable.ic_delete);
+                            textMaster.setText("");
+                            sonidoError.start();
+                            return;
+                        }
+
+                    }
                     if (conexion.necesitaReinspeccion(result)) {
-                        mensaje("Por favor lleve este pallet a la area de Reinspeccion ");
+                        mensaje("Please take this pallet to the Reinspection area", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;
                     }
                     if (conexion.necesitaASN()) {
                         if (!conexion.masterConASN(result)) {
-                            mensaje("Este Master no tiene ASN, favor de asignar uno");
+                            mensaje("This Master does not have an ASN assigned. Please assign one.", android.R.drawable.ic_delete);
                             textMaster.setText("");
                             sonidoError.start();
                             return;
@@ -255,13 +266,13 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     textMaster.setText(result);
 
                     if (!conexion.masterValido(result)) {
-                        mensaje("Master no válido");
+                        mensaje("Invalid Master", android.R.drawable.ic_delete);
                         sonidoError.start();
                         textMaster.setText("");
                         return;
                     }
                     if (conexion.necesitaReinspeccion(result)) {
-                        mensaje("Por favor lleve este pallet a la area de Reinspeccion ");
+                        mensaje("Please take this pallet to the Reinspection area", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;
@@ -269,7 +280,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
 
                     if (conexion.necesitaASN()) {
                         if (!conexion.masterConASN(result)) {
-                            mensaje("Este Master no tiene ASN, favor de asignar uno");
+                            mensaje("This Master does not have an ASN assigned. Please assign one.", android.R.drawable.ic_delete);
                             textMaster.setText("");
                             sonidoError.start();
                             return;
@@ -278,7 +289,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     }
 
                     if (!conexion.plantaCorrecta(result, textLocation.getText().toString().trim())) {
-                        mensaje("Este pallet es de otra planta, este no es su lugar");
+                        mensaje("This product does not belong to the 311D family", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;
@@ -286,14 +297,14 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
 
                     if (conexion.masterYaRegistrado(result, textLocation.getText().toString().trim())) {
                         if(conexion.palletRegistrosQA(result.trim(),"R")){
-                            mensaje("Calidad aun no registro una salida para este pallet");
+                            mensaje("Quality has not yet recorded an outbound for this pallet", android.R.drawable.ic_delete);
                             textMaster.setText("");
                             sonidoError.start();
                             return;
 
                         }
                         if (conexion.registrarDatos(textLocation.getText().toString().trim(), result, usuario.getUsuarioNick())) {
-                            mensaje("Pallet guardado correctamente");
+                            mensaje("Pallet saved successfully", android.R.drawable.checkbox_on_background);
                             textLocation.setText("");
                             textMaster.setText("");
                             lineaLabel.setText("");
@@ -303,20 +314,20 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     }
 
                     if (conexion.lugarOcupado(textLocation.getText().toString().trim())) {
-                        mensaje("Esta localización ya está ocupada");
+                        mensaje("This location is already occupied", android.R.drawable.ic_delete);
                         sonidoError.start();
                         return;
                     }
 
                     if (conexion.validaMasterRegistrado(result)) {
-                        mensaje("Master ya registrado en otra localización");
+                        mensaje("Master already registered in another location", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;
                     }
 
                     if (conexion.registrarDatos(textLocation.getText().toString().trim(), result, usuario.getUsuarioNick())) {
-                        mensaje("Pallet guardado correctamente");
+                        mensaje("Pallet saved successfully", android.R.drawable.checkbox_on_background);
                         textLocation.setText("");
                         textMaster.setText("");
                         lineaLabel.setText("");
@@ -325,14 +336,14 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                 }
 
             } catch (Exception e) {
-                mensaje(e.getMessage());
+                mensaje(e.getMessage(), android.R.drawable.ic_delete);
             } finally {
 
                 if (scanner != null && !scanner.isEnabled()) {
                     try {
                         scanner.enable(); // Vuelve a permitir escaneo
                     } catch (ScannerException e) {
-                        mensaje("Error al activar escáner: " + e.getMessage());
+                        mensaje("Error activating scanner: " + e.getMessage(), android.R.drawable.ic_delete);
                     }
                 }
 
@@ -341,12 +352,13 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
     }
 
 
-    public void mensaje(String mensaje) {
+    public void mensaje(String mensaje, int iconoResId) {
 
 
         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
         dlgAlert.setMessage(mensaje);
         dlgAlert.setTitle("WGPL LOCATION");
+        dlgAlert.setIcon(iconoResId); // Ícono dinámico
         dlgAlert.create().show();
 
     }

@@ -181,19 +181,19 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
                     textMaster.setText(result);
                     //validamos que el master sea valido
                     if (!conexion.masterValido(result)) {
-                        mensaje("Master no valido");
+                        mensaje("Invalid Master", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;
                     }
                   if(!conexion.necesitaReinspeccion(result)){
-                      mensaje("El pallet no tiene requisiones de reinspeccion");
+                      mensaje("This pallet has no reinspection redquirements", android.R.drawable.ic_delete);
                       textMaster.setText("");
                       sonidoError.start();
                       return;
                   }
                   if (!conexion.masterYaRegistrado(result,textLocation.getText().toString().trim())){
-                      mensaje("El pallet no coincide con el area que indicas");
+                      mensaje("The pallet does not match the area you indicated", android.R.drawable.ic_delete);
                       textMaster.setText("");
                       sonidoError.start();
                       return;
@@ -201,7 +201,7 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
                   }
                   if (conexion.palletEnReinspeccion(textLocation.getText().toString().trim())){
 
-                      mensaje("Este pallet ya tiene estatus de reinspeccion");
+                      mensaje("This pallet already has a reinspection status", android.R.drawable.ic_delete);
                       textLocation.setText("");
                       textMaster.setText("");
                       sonidoError.start();
@@ -210,7 +210,7 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
 
                     if(conexion.enviarAReinspeccion(textLocation.getText().toString().trim(), result, usuario.getUsuarioNick())) {
 
-                        mensaje("Te puedes llevar el pallet a reinspeccion sin problema");
+                        mensaje("You can take the pallet to reinspection without any issue", android.R.drawable.checkbox_on_background);
                         textLocation.setText("");
                         textMaster.setText("");
                         sonidoCorrecto.start();
@@ -221,20 +221,20 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
 
 
             } catch (Exception e) {
-                mensaje(e.getMessage());
+                mensaje(e.getMessage(), android.R.drawable.ic_delete);
             }
         });
     }
-    public void mensaje(String mensaje) {
+    public void mensaje(String mensaje, int iconoResId) {
 
 
         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
         dlgAlert.setMessage(mensaje);
         dlgAlert.setTitle("WGPL LOCATION");
+        dlgAlert.setIcon(iconoResId); // Ícono dinámico
         dlgAlert.create().show();
 
     }
-
 
 
 }

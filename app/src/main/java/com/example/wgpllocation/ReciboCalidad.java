@@ -163,22 +163,30 @@ public class ReciboCalidad extends Activity implements EMDKManager.EMDKListener,
     public void updateData(final String result) {
         runOnUiThread(() -> {
             try {
+                   if(result.length() <=2 ){
+                       mensaje("The code is incorrect", android.R.drawable.ic_delete);
+                       textMaster.setText("");
+                       sonidoError.start();
+                       return;
+                   }
                     textMaster.setText(result);
+
+
                     if (!conexion.palletEnReinspeccionPerPallet(result)){
-                        mensaje("A este master no se registro su salida a reinspeccion");
+                        mensaje("This Master has no recorded outbound to reinspection", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;
                     }
-                 if(conexion.palletRegistrosQA(result.trim(),"E")){
-                     mensaje("Ya se registro una entrada para este pallet");
+                 if(!conexion.palletRegistrosQA(result.trim(),"E")){
+                     mensaje("An inbound has already been registered for this pallet", android.R.drawable.ic_delete);
                      textMaster.setText(result);
                      sonidoError.start();
                      return;
 
                  }
                   if(conexion.registraDatosReinspeccion(result,"E",usuario.getUsuarioNick())){
-                      mensaje("Entrada registrada correctamente");
+                      mensaje("Inbound successfully registered", android.R.drawable.checkbox_on_background);
                       sonidoCorrecto.start();
 
                 }
@@ -186,16 +194,17 @@ public class ReciboCalidad extends Activity implements EMDKManager.EMDKListener,
 
 
             } catch (Exception e) {
-                mensaje(e.getMessage());
+                mensaje(e.getMessage(),android.R.drawable.ic_delete);
             }
         });
     }
-    public void mensaje(String mensaje) {
+    public void mensaje(String mensaje, int iconoResId) {
 
 
         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
         dlgAlert.setMessage(mensaje);
         dlgAlert.setTitle("WGPL LOCATION");
+        dlgAlert.setIcon(iconoResId); // Ícono dinámico
         dlgAlert.create().show();
 
     }

@@ -100,13 +100,13 @@ public class MainLogin extends Activity {
                             }
 
                         }else {
-                            conexion.mensaje("Usuario incorrecto","WGPL LOCATION");
+                            conexion.mensaje("Usuario incorrecto","WGPL LOCATION", android.R.drawable.ic_dialog_alert);
                         }
                     } catch (SQLException e) {
-                        conexion.mensaje(e.getMessage(),"WGPL LOCATION");
+                        conexion.mensaje(e.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
                     }
                 }else {
-                    conexion.mensaje("Ingrese usuario y contrasena ","WGPL LOCATION");
+                    conexion.mensaje("Ingrese usuario y contrasena ","WGPL LOCATION", android.R.drawable.ic_dialog_alert);
                 }
             }
         });

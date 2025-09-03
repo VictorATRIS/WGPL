@@ -44,7 +44,7 @@
         android:layout_height="67dp"
         android:layout_margin="8dp"
         android:background="@drawable/bg_embarque"
-        android:drawableStart="@drawable/buscarr"
+
         android:padding="16dp"
         android:text="Return Master"
         android:textColor="#2C3E50"
@@ -52,6 +52,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnEnvio" />
+
+    <Button
+        android:id="@+id/btnSortRequest"
+        android:layout_width="0dp"
+        android:layout_height="67dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_envio"
+
+        android:padding="16dp"
+        android:text="Sort Request"
+        android:textColor="#FFFFFF"
+        android:textSize="19sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnEmbarque" />
 
 
     <ImageView

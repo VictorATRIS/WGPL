@@ -180,13 +180,13 @@ public class Delete extends Activity  implements EMDKManager.EMDKListener, Scann
                     textMaster.setText(result);
                     //validamos que el master sea valido
                     if (!conexion.masterValido(result)) {
-                        mensaje("Master no valido");
+                        mensaje("Invalid Master", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;
                     }
                     if (!conexion.masterYaRegistrado(result,textLocation.getText().toString().trim())){
-                        mensaje("El pallet no coincide con el area que indicas");
+                        mensaje("The pallet does not match the area you specified", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;
@@ -194,7 +194,7 @@ public class Delete extends Activity  implements EMDKManager.EMDKListener, Scann
                     }
 
                  if(conexion.eliminarDatosPallet(textLocation.getText().toString().trim(),result)){
-                     mensaje("Los datos del pallet fueron eliminados correctamente");
+                     mensaje("Pallet data was successfully deleted", android.R.drawable.checkbox_on_background);
                      textLocation.setText("");
                      textMaster.setText("");
                      sonidoCorrecto.start();
@@ -205,16 +205,17 @@ public class Delete extends Activity  implements EMDKManager.EMDKListener, Scann
 
 
             } catch (Exception e) {
-                mensaje(e.getMessage());
+                mensaje(e.getMessage(), android.R.drawable.ic_delete);
             }
         });
     }
-    public void mensaje(String mensaje) {
+    public void mensaje(String mensaje, int iconoResId) {
 
 
         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
         dlgAlert.setMessage(mensaje);
         dlgAlert.setTitle("WGPL LOCATION");
+        dlgAlert.setIcon(iconoResId); // Ícono dinámico
         dlgAlert.create().show();
 
     }

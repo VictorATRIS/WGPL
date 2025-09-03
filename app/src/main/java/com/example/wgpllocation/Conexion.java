@@ -15,6 +15,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Conexion {
     private Connection conn;
@@ -73,18 +76,20 @@ public class Conexion {
             conn = DriverManager.getConnection(cadenaConexion);
             comm = conn.createStatement();
         } catch (Exception e) {
-            mensaje(e.getMessage(),"Pull System");
+            mensaje(e.getMessage(),"Pull System", android.R.drawable.ic_dialog_alert);
         }
         return conn;
 
     }
-    public void mensaje(String mensaje, String titulo) {
+    public void mensaje(String mensaje, String titulo, int iconoResId) {
         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this.activiti);
         dlgAlert.setMessage(mensaje);
         dlgAlert.setTitle(titulo);
-        dlgAlert.create().show();
+        dlgAlert.setIcon(iconoResId); // Ícono dinámico
 
+        dlgAlert.create().show();
     }
+
 
     public boolean validaUsuario(Usuario usuario) throws SQLException {
         boolean correcto = false;
@@ -103,7 +108,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION" , android.R.drawable.ic_dialog_alert);
         } finally {
             if (!conn.isClosed()) {
                 conn.close();
@@ -133,7 +138,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
         } finally {
             if (!conn.isClosed()) {
                 conn.close();
@@ -156,7 +161,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -180,7 +185,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -205,7 +210,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -229,7 +234,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -257,7 +262,7 @@ public class Conexion {
             }
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -284,7 +289,7 @@ public class Conexion {
             }
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -311,7 +316,7 @@ public class Conexion {
             }
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -333,7 +338,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -356,7 +361,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -380,7 +385,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -403,7 +408,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -426,7 +431,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -454,7 +459,7 @@ public class Conexion {
             }
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -475,7 +480,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -499,7 +504,7 @@ public class Conexion {
 
 
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION");
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
             if (!conn.isClosed()) {
@@ -509,6 +514,36 @@ public class Conexion {
         }
         return existe;
 
+    }
+    public List<Map<String, String>> getDatosQr(String qr) throws SQLException {
+        List<Map<String, String>> lista = new ArrayList<>();
+
+        try {
+            initConexion();
+
+            String query = "EXEC SP_CTRL_WGPL_GET_DATOS_QR ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, qr);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                Map<String, String> fila = new HashMap<>();
+                fila.put("SortRequest_Id", rs.getString("SortRequest_Id"));
+                fila.put("Fecha_Actualiza", rs.getString("Fecha_Actualiza"));
+                fila.put("Quality_Issue", rs.getString("Quality_Issue"));
+                lista.add(fila);
+            }
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(), "WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+        }
+
+        return lista;
     }
 
 

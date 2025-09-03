@@ -4,11 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.symbol.emdk.EMDKManager;
 import com.symbol.emdk.barcode.BarcodeManager;
@@ -19,21 +26,25 @@ import com.symbol.emdk.barcode.ScannerResults;
 import com.symbol.emdk.barcode.StatusData;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener, Scanner.StatusListener, Scanner.DataListener {
+public class SortRequest extends Activity implements EMDKManager.EMDKListener, Scanner.StatusListener, Scanner.DataListener {
     public String cadenaConexion;
     public  Usuario usuario;
     Conexion conexion;
     private EMDKManager emdkManager = null;
     private BarcodeManager barcodeManager = null;
     private Scanner scanner = null;
-    private EditText textMaster ;
-    MediaPlayer sonidoError,sonidoCorrecto = null;
+    private EditText textQr ;
+    private TableLayout tableSortRequest;
 
+    MediaPlayer sonidoError,sonidoCorrecto = null;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.return_master);
+        setContentView(R.layout.sort_request);
+        iniciarElementos();
         Intent intent =  getIntent();
         iniciarElementos();
         usuario =(Usuario) intent.getSerializableExtra("Usuario");
@@ -42,16 +53,12 @@ public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener,
         EMDKManager.getEMDKManager(getApplicationContext(), this);
         sonidoError = MediaPlayer.create(this, R.raw.error);
         sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);
-        textMaster.setInputType(InputType.TYPE_NULL);
-    }
 
+    }
     private void iniciarElementos(){
-
-        textMaster = findViewById(R.id.editTextMaster);
-
-
+        textQr = findViewById(R.id.editTextMaster);
+        tableSortRequest = findViewById(R.id.tableSortRequest);
     }
-    @Override
     public void onClosed() {
         if (this.emdkManager != null) {
             this.emdkManager.release();
@@ -164,46 +171,60 @@ public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener,
     public void updateData(final String result) {
         runOnUiThread(() -> {
             try {
-                textMaster.setText(result);
-                if (!conexion.palletEnReinspeccionPerPallet(result)){
-                    mensaje("No outbound to reinspection has been registered for this Master", android.R.drawable.ic_delete);
-                    textMaster.setText("");
+                textQr.setText(result);
+
+                if (!result.endsWith("-QR")){
+                    mensaje("The code is incorrect", android.R.drawable.ic_delete);
+                    textQr.setText("");
                     sonidoError.start();
                     return;
                 }
-                if(conexion.necesitaReinspeccion(result)){
-                    mensaje("This Master has pending reinspections", android.R.drawable.ic_delete);
-                    textMaster.setText("");
-                    sonidoError.start();
-                    return;
-                }
-                if(conexion.palletRegistrosQA(result.trim(),"E")){
-                    mensaje("No inbound has been registered for this pallet", android.R.drawable.ic_delete);
-                    textMaster.setText(result);
-                    sonidoError.start();
-                    return;
 
-                }
-                if(!conexion.palletRegistrosQA(result.trim(),"R")){
-                    mensaje("An outbound has already been registered for this pallet", android.R.drawable.ic_delete);
-                    textMaster.setText(result);
-                    sonidoError.start();
-                    return;
-
-                }
-                if(conexion.registraDatosReinspeccion(result,"R",usuario.getUsuarioNick())){
-                    mensaje("Outbound successfully registered", android.R.drawable.checkbox_on_background);
-                    sonidoCorrecto.start();
-
-                }
-
-
+               llenarTabla(result);
+                textQr.setText("");
 
             } catch (Exception e) {
-                mensaje(e.getMessage(), android.R.drawable.ic_dialog_alert);
+                mensaje(e.getMessage(), android.R.drawable.ic_delete);
             }
         });
     }
+    public void llenarTabla(String qr){
+        try{
+            List<Map<String, String>> datos = conexion.getDatosQr(qr);
+            tableSortRequest.removeAllViews();
+
+// Encabezado
+            TableRow header = new TableRow(this);
+            header.addView(createCell("Sort Request", true));
+            header.addView(createCell("F. Reinspección", true));
+            header.addView(createCell("Quality_Issue", true));
+            tableSortRequest.addView(header);
+
+// Filas
+            for (Map<String, String> fila : datos) {
+                TableRow row = new TableRow(this);
+                row.addView(createCell(fila.get("SortRequest_Id"), false));
+                row.addView(createCell(fila.get("Fecha_Actualiza"), false));
+                row.addView(createCell(fila.get("Quality_Issue"), false));
+                tableSortRequest.addView(row);
+            }
+
+        }catch (Exception e){
+            mensaje(e.getMessage(),android.R.drawable.ic_delete);
+        }
+
+    }
+    private TextView createCell(String text, boolean isHeader) {
+        TextView cell = new TextView(this);
+        cell.setText(text);
+        cell.setPadding(8, 8, 8, 8);
+        cell.setTextSize(isHeader ? 16 : 15);
+        cell.setTextColor(Color.parseColor(isHeader ? "#000000" : "#333333"));
+        cell.setTypeface(null, isHeader ? Typeface.BOLD : Typeface.NORMAL);
+        return cell;
+    }
+
+
     public void mensaje(String mensaje, int iconoResId) {
 
 
@@ -214,4 +235,5 @@ public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener,
         dlgAlert.create().show();
 
     }
+
 }

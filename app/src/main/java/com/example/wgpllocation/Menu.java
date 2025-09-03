@@ -89,6 +89,11 @@ public class Menu extends Activity {
                 btnInspeccion.setEnabled(false);
                 btnDelete.setEnabled(true);
                 break;
+            case "5":
+                btnRecibo.setEnabled(true);
+                btnInspeccion.setEnabled(true);
+                btnDelete.setEnabled(false);
+                break;
         }
     }
 }
