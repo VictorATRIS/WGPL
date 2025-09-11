@@ -50,7 +50,7 @@
                 android:id="@+id/editTextMaster"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Set QR"
+                android:hint=""
                 android:background="@drawable/back"
                 android:inputType="text"
                 android:padding="12dp"
@@ -87,7 +87,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sort Request"
+                        android:text="Sort Request Detail"
                         android:textStyle="bold"
                         android:textColor="#000000"
                         android:padding="8dp"
@@ -98,7 +98,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Date. R."
+                        android:text="Value"
                         android:textStyle="bold"
                         android:textColor="#000000"
                         android:padding="8dp"
@@ -106,20 +106,15 @@
                         android:maxLines="2"
                         android:ellipsize="end" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Quality Issue"
-                        android:textStyle="bold"
-                        android:textColor="#000000"
-                        android:padding="8dp"
-                        android:textSize="16sp"
-                        android:maxLines="2"
-                        android:ellipsize="end" />
                 </TableRow>
 
-                <!-- Fila de ejemplo vacía -->
+
                 <TableRow />
+
+
+
+
+
             </TableLayout>
         </HorizontalScrollView>
     </ScrollView>

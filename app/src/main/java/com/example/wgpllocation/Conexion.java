@@ -529,9 +529,8 @@ public class Conexion {
 
             while (rs.next()) {
                 Map<String, String> fila = new HashMap<>();
-                fila.put("SortRequest_Id", rs.getString("SortRequest_Id"));
-                fila.put("Fecha_Actualiza", rs.getString("Fecha_Actualiza"));
-                fila.put("Quality_Issue", rs.getString("Quality_Issue"));
+                fila.put("Sort_Request_Detail", rs.getString("Sort_Request_Detail"));
+                fila.put("Value", rs.getString("Value"));
                 lista.add(fila);
             }
 

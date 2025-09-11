@@ -195,17 +195,15 @@ public class SortRequest extends Activity implements EMDKManager.EMDKListener, S
 
 // Encabezado
             TableRow header = new TableRow(this);
-            header.addView(createCell("Sort Request", true));
-            header.addView(createCell("F. Reinspección", true));
-            header.addView(createCell("Quality_Issue", true));
+            header.addView(createCell("Sort_Request_Detail", true));
+            header.addView(createCell("Value", true));
             tableSortRequest.addView(header);
 
 // Filas
             for (Map<String, String> fila : datos) {
                 TableRow row = new TableRow(this);
-                row.addView(createCell(fila.get("SortRequest_Id"), false));
-                row.addView(createCell(fila.get("Fecha_Actualiza"), false));
-                row.addView(createCell(fila.get("Quality_Issue"), false));
+                row.addView(createCell(fila.get("Sort_Request_Detail"), false));
+                row.addView(createCell(fila.get("Value"), false));
                 tableSortRequest.addView(row);
             }
 
