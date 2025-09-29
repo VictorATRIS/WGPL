@@ -5,85 +5,100 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#F0F4F8"
     tools:context=".MainLogin">
 
+    <!-- Encabezado -->
     <TextView
         android:id="@+id/textUsuario2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#FBA664"
-        android:padding="16dp"
-        android:text="Menu"
+        android:padding="20dp"
+        android:text="📋 Menu"
         android:textColor="#0F0E0E"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:gravity="center"
-        android:elevation="4dp"
+        android:elevation="6dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Botón Recived -->
     <Button
         android:id="@+id/btnEnvio"
         android:layout_width="0dp"
-        android:layout_height="68dp"
-        android:layout_margin="8dp"
-        android:background="@drawable/bg_envio"
-        android:drawableStart="@drawable/icons8_cajas_30"
-        android:padding="16dp"
-        android:text="Recived"
-        android:textColor="#E3E5E6"
-        android:textSize="19sp"
+        android:layout_height="80dp"
+        android:layout_margin="12dp"
+        android:backgroundTint="#FFFFFF"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:elevation="6dp"
+        android:text="📦\nRecived"
+        android:textAlignment="center"
+        android:textColor="#143FA4"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/textUsuario2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textUsuario2" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Botón Return Master -->
     <Button
         android:id="@+id/btnEmbarque"
         android:layout_width="0dp"
-        android:layout_height="67dp"
-        android:layout_margin="8dp"
-        android:background="@drawable/bg_embarque"
-
-        android:padding="16dp"
-        android:text="Return Master"
+        android:layout_height="80dp"
+        android:layout_margin="12dp"
+        android:backgroundTint="#FFFFFF"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:elevation="6dp"
+        android:text="🔁\nReturn Master"
+        android:textAlignment="center"
         android:textColor="#2C3E50"
-        android:textSize="19sp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/btnEnvio"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnEnvio" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Botón Sort Request -->
     <Button
         android:id="@+id/btnSortRequest"
         android:layout_width="0dp"
-        android:layout_height="67dp"
-        android:layout_margin="8dp"
-        android:background="@drawable/bg_envio"
-
-        android:padding="16dp"
-        android:text="Sort Request"
-        android:textColor="#FFFFFF"
-        android:textSize="19sp"
+        android:layout_height="80dp"
+        android:layout_margin="12dp"
+        android:backgroundTint="#FFFFFF"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:elevation="6dp"
+        android:text="🧮\nSort Request"
+        android:textAlignment="center"
+        android:textColor="#FBA664"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/btnEmbarque"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnEmbarque" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-
+    <!-- Logo centrado abajo -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="100dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="16dp"
         android:src="@drawable/logo_logintns"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
+    <!-- Botón cerrar arriba -->
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="44dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="44dp"
+        android:layout_margin="8dp"
         android:src="@drawable/cerrarr"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

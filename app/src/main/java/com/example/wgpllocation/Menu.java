@@ -8,10 +8,13 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
+import java.sql.SQLException;
+
 public class Menu extends Activity {
     private  Usuario usuario;
     public String cadenaConexion;
-    Button btnRecibo, btnInspeccion, btnDelete;
+    Button btnRecibo, btnInspeccion, btnDelete, btnShipping;
+    Conexion conexion;
     @Override
 
 
@@ -24,6 +27,12 @@ public class Menu extends Activity {
         usuario =(Usuario) intent.getSerializableExtra("Usuario");
         cadenaConexion = intent.getStringExtra("cadenaCon");
         bloqueaBotones();
+       conexion = new Conexion(cadenaConexion);
+        try {
+            bloqueandoBotonesShipping();
+        } catch (SQLException e) {
+            conexion.mensaje(e.getMessage(),"WGPL", android.R.drawable.ic_delete);
+        }
 
 
         btnRecibo.setOnClickListener(new View.OnClickListener() {
@@ -56,6 +65,16 @@ public class Menu extends Activity {
                 startActivity(intent2);
             }
         });
+        btnShipping.setOnClickListener(new View.OnClickListener() {
+            Intent intent2 = null;
+            public void onClick(View view) {
+                intent2 = new Intent(Menu.this, Shipping.class);
+                intent2.putExtra("Usuario", usuario);
+                intent2.putExtra("cadenaCon",cadenaConexion);
+                startActivity(intent2);
+            }
+        });
+
 
     }
 
@@ -63,6 +82,7 @@ public class Menu extends Activity {
         btnRecibo = findViewById(R.id.btnEnvio);
         btnInspeccion = findViewById(R.id.btnEmbarque);
         btnDelete = findViewById(R.id.btnRetorno);
+        btnShipping = findViewById(R.id.btnShipping);
 
     }
 
@@ -96,4 +116,16 @@ public class Menu extends Activity {
                 break;
         }
     }
+    private void bloqueandoBotonesShipping() throws SQLException {
+      try {
+          if(!conexion.existeOrden()) {
+              btnShipping.setEnabled(false);
+          }
+      }catch (Exception ex) {
+          conexion.mensaje(ex.getMessage(),"WGPL", android.R.drawable.ic_delete);
+
+      }
+
+    }
+
 }

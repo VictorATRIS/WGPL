@@ -17,6 +17,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Check if you have this parameter enabled.
+            // Add if missing and rebuild your app to device.
+            debuggable true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -37,4 +42,6 @@ dependencies {
     implementation files('libs/jtds-1.2.5.jar')
     compileOnly fileTree(include: ['com.symbol.emdk.jar'], dir: 'C:\\Users\\victor.avalos\\AppData\\Local\\Android\\Sdk\\add-ons\\addon-symbol_emdk-symbol-26\\libs')
     implementation fileTree(exclude: ['com.symbol.emdk.jar'], dir: 'libs')
+    implementation 'com.google.android.material:material:1.12.0'
+
 }

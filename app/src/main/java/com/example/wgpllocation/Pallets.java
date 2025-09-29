@@ -230,7 +230,12 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                         sonidoError.start();
                         return;
                     }
-
+                    if (!conexion.plantaCorrecta(result, "0")) {
+                        mensaje("This product does not belong to the 311D products", android.R.drawable.ic_delete);
+                        textMaster.setText("");
+                        sonidoError.start();
+                        return;
+                    }
 
                     if (conexion.necesitaASN()) {
                         if (!conexion.masterConASN(result)) {
@@ -247,15 +252,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                         sonidoError.start();
                         return;
                     }
-                    if (conexion.necesitaASN()) {
-                        if (!conexion.masterConASN(result)) {
-                            mensaje("This Master does not have an ASN assigned. Please assign one.", android.R.drawable.ic_delete);
-                            textMaster.setText("");
-                            sonidoError.start();
-                            return;
-                        }
 
-                    }
                     lineaLabel.setText(conexion.getLocacionPallet(result));
                     textMaster.setText(result);
                     return;
@@ -289,7 +286,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     }
 
                     if (!conexion.plantaCorrecta(result, textLocation.getText().toString().trim())) {
-                        mensaje("This product does not belong to the 311D family", android.R.drawable.ic_delete);
+                        mensaje("This product does not belong to the 311D products", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;

@@ -89,5 +89,11 @@
             android:theme="@android:style/Theme.NoTitleBar"
             >
         </activity>
+        <activity
+            android:name="com.example.wgpllocation.Shipping"    android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+
+            >
+        </activity>
     </application>
 </manifest>

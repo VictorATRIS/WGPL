@@ -27,7 +27,7 @@ public class ReciboCalidad extends Activity implements EMDKManager.EMDKListener,
     private EMDKManager emdkManager = null;
     private BarcodeManager barcodeManager = null;
     private Scanner scanner = null;
-    private EditText  textMaster ;
+    private EditText  textMaster, textLocation ;
     MediaPlayer sonidoError,sonidoCorrecto = null;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
@@ -47,6 +47,7 @@ public class ReciboCalidad extends Activity implements EMDKManager.EMDKListener,
     private void iniciarElementos(){
 
         textMaster = findViewById(R.id.editTextMaster);
+        textLocation = findViewById(R.id.editTextLocation);
 
 
     }
@@ -163,13 +164,29 @@ public class ReciboCalidad extends Activity implements EMDKManager.EMDKListener,
     public void updateData(final String result) {
         runOnUiThread(() -> {
             try {
-                   if(result.length() <=2 ){
-                       mensaje("The code is incorrect", android.R.drawable.ic_delete);
-                       textMaster.setText("");
-                       sonidoError.start();
-                       return;
-                   }
-                    textMaster.setText(result);
+                String tipo  = "";
+
+                if (result.startsWith("L") && result.endsWith("T")) {
+                    // Elimina el primer y último carácter
+                    String trimmedResult = result.substring(1, result.length() - 1);
+
+                    textLocation.setText(trimmedResult);
+                    textMaster.setText("");
+                    return;
+                }
+
+                if (textLocation.getText().toString().trim().equals("")) {
+                    mensaje("Please scan the location", android.R.drawable.ic_delete);
+                    return;
+                }
+
+                // Los Master tiene que empezar por 4S
+                if (!result.startsWith("4S")) {
+                    mensaje("Incorrect data", android.R.drawable.ic_delete);
+                    sonidoError.start();
+                    return;
+                }
+                textMaster.setText(result);
 
 
                     if (!conexion.palletEnReinspeccionPerPallet(result)){
@@ -178,16 +195,65 @@ public class ReciboCalidad extends Activity implements EMDKManager.EMDKListener,
                         sonidoError.start();
                         return;
                     }
-                 if(!conexion.palletRegistrosQA(result.trim(),"E")){
-                     mensaje("An inbound has already been registered for this pallet", android.R.drawable.ic_delete);
-                     textMaster.setText(result);
-                     sonidoError.start();
-                     return;
 
-                 }
-                  if(conexion.registraDatosReinspeccion(result,"E",usuario.getUsuarioNick())){
+                    switch (textLocation.getText().toString().substring(0,2).trim().toUpperCase()){
+                        case "QS" :
+                            tipo = "Q";
+                            break;
+                        case "QI" :
+                            tipo = "R";
+                            break;
+                        case "QR" :
+                            tipo = "B";
+                            break;
+                        case "GO":
+                                tipo = "G";
+                                break;
+                        default:
+                            mensaje("Invalid location", android.R.drawable.ic_delete);
+                            textMaster.setText("");
+                            textLocation.setText("");
+                            sonidoError.start();
+                            return;
+
+
+                    }
+
+                    if (tipo.equalsIgnoreCase("G")){
+                        if (!conexion.palletEnReinspeccionPerPallet(result)){
+                            mensaje("No outbound to reinspection has been registered for this Master", android.R.drawable.ic_delete);
+                            textMaster.setText("");
+                            sonidoError.start();
+                            return;
+                        }
+                        if(conexion.necesitaReinspeccion(result)){
+                            mensaje("This Master has pending reinspections", android.R.drawable.ic_delete);
+                            textMaster.setText("");
+                            sonidoError.start();
+                            return;
+                        }
+                        if(conexion.palletRegistrosQA(result.trim(),"E")){
+                            mensaje("No inbound has been registered for this pallet", android.R.drawable.ic_delete);
+                            textMaster.setText(result);
+                            sonidoError.start();
+                            return;
+
+                        }
+                        if(!conexion.palletRegistrosQA(result.trim(),"R")){
+                            mensaje("An outbound has already been registered for this pallet", android.R.drawable.ic_delete);
+                            textMaster.setText(result);
+                            sonidoError.start();
+                            return;
+
+                        }
+
+
+                    }
+                  if(conexion.registraDatosReinspeccionQA(result,tipo,usuario.getUsuarioNick(), textLocation.getText().toString().trim())){
                       mensaje("Inbound successfully registered", android.R.drawable.checkbox_on_background);
                       sonidoCorrecto.start();
+                      textMaster.setText("");
+                      textLocation.setText("");
 
                 }
 

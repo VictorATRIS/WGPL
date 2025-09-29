@@ -1,5 +1,7 @@
 package com.example.wgpllocation;
 
+import static android.icu.text.MessagePattern.ArgType.SELECT;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -457,7 +459,6 @@ public class Conexion {
                 registro = true;
 
             }
-
         } catch (SQLException ex) {
             mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
@@ -467,6 +468,31 @@ public class Conexion {
             }
         }
             return registro ;
+    }
+    public boolean registraDatosReinspeccionQA( String master, String tipo, String usuario, String area) throws SQLException {
+        boolean registro = false;
+        try {
+            initConexion(); // Inicia la conexión con la base de datos
+
+            // Ejecuta el stored procedure con los parámetros
+            String query = "SP_CTRL_WGPL_REGISTRA_DATOS_RECIBO_QA'" + master.trim() + "', '" + tipo.trim() + "', '" + usuario + "', '" + area + "'";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+
+            int resultado = preparedStatement.executeUpdate();
+
+            if (resultado > 0) {
+                registro = true;
+
+            }
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+        }
+        return registro ;
     }
     public boolean palletRegistrosQA(String master, String tipo) throws SQLException {
         boolean existe = false;
@@ -544,6 +570,130 @@ public class Conexion {
 
         return lista;
     }
+    public boolean existeOrden() throws SQLException {
+        boolean existe = false;
+        try {
+            initConexion(); // Iniciamos la conexion de la base da datos
+            String query = "select folio from ERP_CTRL_WGPL_SHIPPING_INSTRUCTIONS_MST where convert(date,crtd_date,101) = CONVERT(date, GETDATE(),101) and status = '0'";
+            ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
+            if (resultSet.next()) {
+                existe = true;
+            }
 
 
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+
+        }
+        return existe;
+
+    }
+    public List<Map<String, String>> getDailyOrden() throws SQLException {
+        List<Map<String, String>> lista = new ArrayList<>();
+
+        try {
+            initConexion();
+
+            String query = "EXEC SP_CTRL_WGPL_GET_DAILY_ORDER";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                Map<String, String> fila = new HashMap<>();
+                fila.put("Location", rs.getString("Location"));
+                fila.put("Master", rs.getString("Master"));
+                fila.put("Status", rs.getString("Status"));
+                lista.add(fila);
+            }
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(), "WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+        } finally {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        }
+
+        return lista;
+    }
+    public boolean debeEmbarcar(String master) throws SQLException {
+        boolean existe = false;
+        try {
+            initConexion(); // Iniciamos la conexion de la base da datos
+            String query = "SP_CTRL_WGPL_NEED_SHIPPING'" + master.trim() + "'";
+            ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
+            if (resultSet.next()) {
+                existe = true;
+            }
+
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+
+        }
+        return existe;
+
+    }
+    public boolean registraEmbarque(String master, String usuario, String area) throws SQLException {
+        boolean registro = false;
+        try {
+            initConexion();
+
+            String query = "EXEC SP_CTRL_WGPL_SAVE_SHIPPING '"
+                    + master.trim() + "', '"
+                    + usuario.trim() + "', '"
+                    + area.trim() + "'";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                int resultado = rs.getInt("Resultado");
+                registro = resultado > 0;
+            }
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(), "WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        }
+        return registro;
+    }
+    public boolean cerrarShippingOrder( String usuario) throws SQLException {
+        boolean registro = false;
+        try {
+            initConexion(); // Inicia la conexión con la base de datos
+
+            // Ejecuta el stored procedure con los parámetros
+            String query = "SP_CTRL_WGPL_CLOSE_SHIPPING_ORDER'" + usuario + "'";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+
+            int resultado = preparedStatement.executeUpdate();
+
+            if (resultado > 0) {
+                registro = true;
+
+            }
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+        }
+        return registro ;
+    }
 }
