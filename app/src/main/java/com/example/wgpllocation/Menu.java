@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class Menu extends Activity {
     private  Usuario usuario;
     public String cadenaConexion;
-    Button btnRecibo, btnInspeccion, btnDelete, btnShipping;
+    Button btnRecibo, btnInspeccion, btnDelete, btnShipping, btnExit;
     Conexion conexion;
     @Override
 
@@ -74,6 +74,16 @@ public class Menu extends Activity {
                 startActivity(intent2);
             }
         });
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            Intent intent2 = null;
+            public void onClick(View view) {
+                intent2 = new Intent(Menu.this, Exit.class);
+                intent2.putExtra("Usuario", usuario);
+                intent2.putExtra("cadenaCon",cadenaConexion);
+                startActivity(intent2);
+            }
+        });
+
 
 
     }
@@ -83,6 +93,7 @@ public class Menu extends Activity {
         btnInspeccion = findViewById(R.id.btnEmbarque);
         btnDelete = findViewById(R.id.btnRetorno);
         btnShipping = findViewById(R.id.btnShipping);
+        btnExit = findViewById(R.id.btnShippingExtra);
 
     }
 

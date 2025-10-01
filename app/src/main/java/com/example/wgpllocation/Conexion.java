@@ -696,4 +696,53 @@ public class Conexion {
         }
         return registro ;
     }
+    public boolean tienePickUp(String master) throws SQLException {
+        boolean existe = false;
+        try {
+            initConexion(); // Iniciamos la conexion de la base da datos
+            String query = "select * from ERP_CTRL_WGPL_SHIPPING_INSTRUCTIONS_DT where master = '" + master.trim() + "' and status = '1'";
+            ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
+            if (resultSet.next()) {
+                existe = true;
+            }
+
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+
+        }
+        return existe;
+
+    }
+    public boolean registrarSalida( String usuario, String master) throws SQLException {
+        boolean registro = false;
+        try {
+            initConexion(); // Inicia la conexión con la base de datos
+
+            // Ejecuta el stored procedure con los parámetros
+            String query = "update  ERP_CTRL_WGPL_SHIPPING_INSTRUCTIONS_DT set exit_date = GETDATE(), exit_usu = '" + usuario + "'  where master = '" + master.trim() + "'";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+
+            int resultado = preparedStatement.executeUpdate();
+
+            if (resultado > 0) {
+                registro = true;
+
+            }
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+        }
+        return registro ;
+    }
+
 }

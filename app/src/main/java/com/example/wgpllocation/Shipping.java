@@ -234,7 +234,7 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
                 return;
             }
 
-            if(conexion.registraEmbarque(textMaster.getText().toString(),usuario.getUsuario(),textLocation.getText().toString())){
+            if(conexion.registraEmbarque(textMaster.getText().toString(),usuario.getUsuarioNick(),textLocation.getText().toString())){
                 textMaster.setText("");
                 textLocation.setText("");
                 sonidoCorrecto.start();

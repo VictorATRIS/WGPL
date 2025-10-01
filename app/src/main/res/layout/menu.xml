@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F4F8"
+    android:background="#FFFBF1"
     tools:context=".MainLogin">
 
     <!-- Encabezado -->
@@ -25,93 +25,113 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Botón Pallet Storage -->
-    <Button
-        android:id="@+id/btnEnvio"
+    <!-- ScrollView para los botones -->
+    <ScrollView
+        android:id="@+id/scrollBotones"
         android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_margin="12dp"
-        android:backgroundTint="#FFFFFF"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:elevation="6dp"
-        android:text="📦\nPallet Storage"
-        android:textAlignment="center"
-        android:textColor="#143FA4"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/textUsuario2"
+        app:layout_constraintBottom_toTopOf="@id/imageView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Botón Reinspection -->
-    <Button
-        android:id="@+id/btnEmbarque"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_margin="12dp"
-        android:backgroundTint="#FFFFFF"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:elevation="6dp"
-        android:text="🔍\nReinspection"
-        android:textAlignment="center"
-        android:textColor="#2C3E50"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/btnEnvio"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
 
-    <!-- Botón Shipping -->
-    <Button
-        android:id="@+id/btnShipping"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_margin="12dp"
-        android:backgroundTint="#FFFFFF"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:elevation="6dp"
-        android:text="📤\nShipping"
-        android:textAlignment="center"
-        android:textColor="#0D47A1"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/btnEmbarque"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <!-- Botón Pallet Storage -->
+            <Button
+                android:id="@+id/btnEnvio"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#FFFFFF"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:elevation="6dp"
+                android:text="📦\nPallet Storage"
+                android:textAlignment="center"
+                android:textColor="#143FA4"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-    <!-- Botón Delete -->
-    <Button
-        android:id="@+id/btnRetorno"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_margin="12dp"
-        android:backgroundTint="#FFFFFF"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:elevation="6dp"
-        android:text="🗑️\nDelete"
-        android:textAlignment="center"
-        android:textColor="#E53935"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/btnShipping"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <!-- Botón Reinspection -->
+            <Button
+                android:id="@+id/btnEmbarque"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#FFFFFF"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:elevation="6dp"
+                android:text="🔍\nReinspection"
+                android:textAlignment="center"
+                android:textColor="#2C3E50"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-    <!-- Logo centrado abajo -->
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/logo_logintns"
-        android:background="#FFFFFF"
-        android:elevation="4dp"
-        android:padding="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+            <!-- Botón Pick Up -->
+            <Button
+                android:id="@+id/btnShipping"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#FFFFFF"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:elevation="6dp"
+                android:text="📤\nPick Up"
+                android:textAlignment="center"
+                android:textColor="#0D47A1"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Botón Shipping Extra -->
+            <Button
+                android:id="@+id/btnShippingExtra"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#FFFFFF"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:elevation="6dp"
+                android:text="🚚\nShipping"
+                android:textAlignment="center"
+                android:textColor="#1E88E5"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Botón Delete -->
+            <Button
+                android:id="@+id/btnRetorno"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#FFFFFF"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:elevation="6dp"
+                android:text="🗑️\nDelete"
+                android:textAlignment="center"
+                android:textColor="#E53935"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Logo centrado abajo sin fondo ni padding -->
 
     <!-- Botón cerrar arriba -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="81dp"
+        android:layout_height="58dp"
+        android:layout_marginBottom="4dp"
+        android:src="@drawable/logo_logintns"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="44dp"
