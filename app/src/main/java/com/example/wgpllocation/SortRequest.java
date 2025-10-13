@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SortRequest extends Activity implements EMDKManager.EMDKListener, Scanner.StatusListener, Scanner.DataListener {
-    public String cadenaConexion;
+    public String cadenaConexion, planta;
     public  Usuario usuario;
     Conexion conexion;
     private EMDKManager emdkManager = null;
@@ -49,7 +49,8 @@ public class SortRequest extends Activity implements EMDKManager.EMDKListener, S
         iniciarElementos();
         usuario =(Usuario) intent.getSerializableExtra("Usuario");
         cadenaConexion = intent.getStringExtra("cadenaCon");
-        conexion = new Conexion(cadenaConexion);
+        planta = intent.getStringExtra("Planta");
+        conexion = new Conexion(cadenaConexion,planta);
         EMDKManager.getEMDKManager(getApplicationContext(), this);
         sonidoError = MediaPlayer.create(this, R.raw.error);
         sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);

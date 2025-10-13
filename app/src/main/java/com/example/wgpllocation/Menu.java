@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 public class Menu extends Activity {
     private  Usuario usuario;
-    public String cadenaConexion;
+    public String cadenaConexion, planta;
     Button btnRecibo, btnInspeccion, btnDelete, btnShipping, btnExit;
     Conexion conexion;
     @Override
@@ -26,8 +26,9 @@ public class Menu extends Activity {
         iniciarElementos();
         usuario =(Usuario) intent.getSerializableExtra("Usuario");
         cadenaConexion = intent.getStringExtra("cadenaCon");
+        planta = intent.getStringExtra("Planta");
         bloqueaBotones();
-       conexion = new Conexion(cadenaConexion);
+       conexion = new Conexion(cadenaConexion,planta);
         try {
             bloqueandoBotonesShipping();
         } catch (SQLException e) {
@@ -41,6 +42,7 @@ public class Menu extends Activity {
                 intent2 = new Intent(Menu.this, Pallets.class);
                 intent2.putExtra("Usuario", usuario);
                 intent2.putExtra("cadenaCon",cadenaConexion);
+                intent2.putExtra("Planta",planta);
                 startActivity(intent2);
             }
         });
@@ -52,6 +54,7 @@ public class Menu extends Activity {
                 intent2 = new Intent(Menu.this, Inspeccion.class);
                 intent2.putExtra("Usuario", usuario);
                 intent2.putExtra("cadenaCon",cadenaConexion);
+                intent2.putExtra("Planta",planta);
                 startActivity(intent2);
             }
         });
@@ -62,6 +65,7 @@ public class Menu extends Activity {
                 intent2 = new Intent(Menu.this, Delete.class);
                 intent2.putExtra("Usuario", usuario);
                 intent2.putExtra("cadenaCon",cadenaConexion);
+                intent2.putExtra("Planta",planta);
                 startActivity(intent2);
             }
         });
@@ -71,6 +75,7 @@ public class Menu extends Activity {
                 intent2 = new Intent(Menu.this, Shipping.class);
                 intent2.putExtra("Usuario", usuario);
                 intent2.putExtra("cadenaCon",cadenaConexion);
+                intent2.putExtra("Planta",planta);
                 startActivity(intent2);
             }
         });
@@ -80,6 +85,7 @@ public class Menu extends Activity {
                 intent2 = new Intent(Menu.this, Exit.class);
                 intent2.putExtra("Usuario", usuario);
                 intent2.putExtra("cadenaCon",cadenaConexion);
+                intent2.putExtra("Planta",planta);
                 startActivity(intent2);
             }
         });

@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Shipping extends Activity implements EMDKManager.EMDKListener, Scanner.StatusListener, Scanner.DataListener {
-    public String cadenaConexion;
+    public String cadenaConexion,planta;
     public  Usuario usuario;
     Conexion conexion;
     private EMDKManager emdkManager = null;
@@ -54,7 +54,8 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
         iniciarElementos();
         usuario =(Usuario) intent.getSerializableExtra("Usuario");
         cadenaConexion = intent.getStringExtra("cadenaCon");
-        conexion = new Conexion(cadenaConexion);
+        planta = intent.getStringExtra("Planta");
+        conexion = new Conexion(cadenaConexion,planta);
         sonidoError = MediaPlayer.create(this, R.raw.error);
         sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);
         EMDKManager.getEMDKManager(getApplicationContext(), this);
@@ -62,8 +63,8 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
 
         textLocation.setInputType(InputType.TYPE_NULL);
         textMaster.setInputType(InputType.TYPE_NULL);
+        btnCloseFloat.setVisibility(View.GONE);
 
-        getOrden();
         btnCloseFloat.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
@@ -93,6 +94,7 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
         this.emdkManager = emdkManager;
         initBarcodeManager();
         initScanner();
+        getOrden();
     }
 
     @Override
@@ -269,7 +271,7 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
         dlgAlert.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 try{
-                    conexion.cerrarShippingOrder(usuario.getUsuarioNick());
+                    //conexion.cerrarShippingOrder(usuario.getUsuarioNick());
                     mensaje("Shipping order closed successfully", android.R.drawable.checkbox_on_background);
                     getOrden();
                     dialog.dismiss();
@@ -333,7 +335,7 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
                 String rawStatus = orden.get("Status");
                 String statusClean = rawStatus != null ? rawStatus.trim() : "";
 
-                if ("1".equals(statusClean)) {
+                if ("1".equals(statusClean) || "2".equals(statusClean)) {
                     txtStatus.setText("✅");
                     txtStatus.setTextColor(Color.parseColor("#4CAF50")); // Verde
                     totalAsignados++; // Incrementa si está asignado
@@ -351,7 +353,16 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
             // Actualiza el label con formato "asignados/total"
             TextView lblTotales = findViewById(R.id.lblTotales);
             if (totalAsignados >= ordenes.size()){
-                conexion.cerrarShippingOrder(usuario.getUsuarioNick());
+
+               // conexion.cerrarShippingOrder(usuario.getUsuarioNick());
+                mensaje("Shipping order closed successfully", android.R.drawable.checkbox_on_background);
+                if (scanner != null && scanner.isEnabled()) {
+                    try {
+                        scanner.disable(); // Esto detiene la lectura
+                    } catch (ScannerException e) {
+                        mensaje("Error deactivating scanner: " + e.getMessage(), android.R.drawable.ic_delete);
+                    }
+                }
             }
             lblTotales.setText("Total pallets: " + totalAsignados + "/" + ordenes.size());
 

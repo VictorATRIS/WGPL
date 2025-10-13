@@ -32,7 +32,7 @@ public class MainLogin extends Activity {
     private Usuario usuario;
     private TextView textUsuario;
     private TextView textContrasena;
-    private String cadenaConexion;
+    private String cadenaConexion, planta;
     private Button butIngresar ;
     private Conexion conexion ;
     @Override
@@ -93,6 +93,7 @@ public class MainLogin extends Activity {
                                 textUsuario.requestFocus();
                                 intent.putExtra("Usuario", usuario);
                                 intent.putExtra("cadenaCon",cadenaConexion);
+                                intent.putExtra("Planta",planta);
 
                                 startActivity(intent);
                             } catch (Exception ex) {
@@ -169,6 +170,10 @@ public class MainLogin extends Activity {
             while ((line = br.readLine()) != null) {
                 if (line.equals("CadenaConexion")) {
                     cadenaConexion = br.readLine();
+
+                }
+                if (line.equals("Planta")) {
+                    planta = br.readLine();
 
                 }
 

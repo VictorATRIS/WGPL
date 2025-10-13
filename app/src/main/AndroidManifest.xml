@@ -97,7 +97,7 @@
         </activity>
         <activity
             android:name="com.example.wgpllocation.Exit"    android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
             >
         </activity>
     </application>

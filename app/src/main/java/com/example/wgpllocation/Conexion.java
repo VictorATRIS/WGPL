@@ -29,8 +29,13 @@ public class Conexion {
     private String usuarioo;
     private String password, dom;
     private Usuario usuario;
+    private String planta;
     public Conexion(String cadenaConexion) {
         this.cadenaConexion = cadenaConexion;
+    }
+    public Conexion(String cadenaConexion, String planta ) {
+        this.cadenaConexion = cadenaConexion;
+        this.planta = planta;
     }
 
     public Conexion(String cadenaConexion, Activity activiti) {
@@ -45,8 +50,6 @@ public class Conexion {
         this.comm = comm;
         this.cadenaConexion = cadenaConexion;
         this.activiti = activiti;
-
-
         this.usuarioo = usuarioo;
         this.password = password;
         this.dom = dom;
@@ -177,6 +180,7 @@ public class Conexion {
 
     public boolean masterYaRegistrado(String pallet, String area) throws SQLException {
         boolean existe = false;
+        area = planta.trim() + area.trim();
         try {
             initConexion(); // Iniciamos la conexion de la base da datos
             String query = "SP_CTRL_WGPL_PALLET_REGISTRADO'" + pallet.trim() + "' ,'" + area.trim() + "'";
@@ -202,6 +206,7 @@ public class Conexion {
 
     public boolean lugarOcupado(String area) throws SQLException {
         boolean existe = false;
+        area = planta.trim() + area.trim();
         try {
             initConexion(); // Iniciamos la conexion de la base da datos
             String query = "SP_CTRL_WGPL_LOCALIZACION_OCUPADA'" + area.trim() + "'";
@@ -249,6 +254,7 @@ public class Conexion {
     }
     public boolean registrarDatos(String area, String master, String usuario) throws SQLException {
         boolean registro = false;
+        area = planta.trim() + area.trim();
         try {
             initConexion(); // Inicia la conexión con la base de datos
 
@@ -276,6 +282,7 @@ public class Conexion {
 
     public boolean enviarAReinspeccion(String area, String master, String usuario) throws SQLException {
         boolean registro = false;
+        area = planta.trim() + area.trim();
         try {
             initConexion(); // Inicia la conexión con la base de datos
 
@@ -303,6 +310,7 @@ public class Conexion {
 
     public boolean eliminarDatosPallet(String area, String master) throws SQLException {
         boolean registro = false;
+        area = planta.trim() + area.trim();
         try {
             initConexion(); // Inicia la conexión con la base de datos
 
@@ -330,6 +338,7 @@ public class Conexion {
 
     public boolean plantaCorrecta(String pallet, String area) throws SQLException {
         boolean existe = false;
+        area = planta.trim() + area.trim();
         try {
             initConexion(); // Iniciamos la conexion de la base da datos
             String query = "SP_CTRL_WGPL_VALIDA_PLANTA'" + pallet.trim() + "' ,'" + area.trim() + "'";
@@ -353,6 +362,7 @@ public class Conexion {
     }
     public boolean palletEnReinspeccion(String area) throws SQLException {
         boolean existe = false;
+        area = planta.trim() + area.trim();
         try {
             initConexion(); // Iniciamos la conexion de la base da datos
             String query = "select Area from ERP_CTRL_WGPL_LOCATIONS where area = '" + area.trim() + "' and estatus = '-1'";
@@ -471,6 +481,7 @@ public class Conexion {
     }
     public boolean registraDatosReinspeccionQA( String master, String tipo, String usuario, String area) throws SQLException {
         boolean registro = false;
+        area = planta.trim() + area.trim();
         try {
             initConexion(); // Inicia la conexión con la base de datos
 
@@ -646,6 +657,7 @@ public class Conexion {
     }
     public boolean registraEmbarque(String master, String usuario, String area) throws SQLException {
         boolean registro = false;
+        area = planta.trim() + area.trim();
         try {
             initConexion();
 
@@ -719,30 +731,32 @@ public class Conexion {
         return existe;
 
     }
-    public boolean registrarSalida( String usuario, String master) throws SQLException {
+
+    public boolean registrarSalida(String usuario, String master) throws SQLException {
         boolean registro = false;
         try {
-            initConexion(); // Inicia la conexión con la base de datos
+            initConexion();
 
-            // Ejecuta el stored procedure con los parámetros
-            String query = "update  ERP_CTRL_WGPL_SHIPPING_INSTRUCTIONS_DT set exit_date = GETDATE(), exit_usu = '" + usuario + "'  where master = '" + master.trim() + "'";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            String query = "EXEC SP_CTRL_WGPL_EXIT_SHIPPING '"
+                    + master.trim() + "', '"
+                    + usuario.trim() + "'";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
 
-            int resultado = preparedStatement.executeUpdate();
-
-            if (resultado > 0) {
-                registro = true;
-
+            if (rs.next()) {
+                int resultado = rs.getInt("Resultado");
+                registro = resultado > 0;
             }
+
         } catch (SQLException ex) {
-            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            mensaje(ex.getMessage(), "WGPL LOCATION", android.R.drawable.ic_dialog_alert);
             return false;
         } finally {
-            if (!conn.isClosed()) {
+            if (conn != null && !conn.isClosed()) {
                 conn.close();
             }
         }
-        return registro ;
+        return registro;
     }
 
 }

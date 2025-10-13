@@ -3,13 +3,22 @@ package com.example.wgpllocation;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.symbol.emdk.EMDKManager;
 import com.symbol.emdk.barcode.BarcodeManager;
 import com.symbol.emdk.barcode.ScanDataCollection;
@@ -19,16 +28,19 @@ import com.symbol.emdk.barcode.ScannerResults;
 import com.symbol.emdk.barcode.StatusData;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Exit extends Activity implements EMDKManager.EMDKListener, Scanner.StatusListener, Scanner.DataListener{
     private EditText textLocation, textMaster ;
     MediaPlayer sonidoError,sonidoCorrecto = null;
-    public String cadenaConexion;
+    public String cadenaConexion, planta ;
     public  Usuario usuario;
     Conexion conexion;
     private EMDKManager emdkManager = null;
     private BarcodeManager barcodeManager = null;
     private Scanner scanner = null;
+    private FloatingActionButton btnCloseFloat;
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.salida);
@@ -36,17 +48,25 @@ public class Exit extends Activity implements EMDKManager.EMDKListener, Scanner.
         iniciarElementos();
         usuario =(Usuario) intent.getSerializableExtra("Usuario");
         cadenaConexion = intent.getStringExtra("cadenaCon");
-        conexion = new Conexion(cadenaConexion);
+        planta = intent.getStringExtra("Planta");
+        conexion = new Conexion(cadenaConexion, planta);
         EMDKManager.getEMDKManager(getApplicationContext(), this);
         sonidoError = MediaPlayer.create(this, R.raw.error);
         sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);
         textLocation.setInputType(InputType.TYPE_NULL);
         textMaster.setInputType(InputType.TYPE_NULL);
+        btnCloseFloat.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                mensaje();
+            }
+        });
     }
 
     private void iniciarElementos(){
         textLocation = findViewById(R.id.editTextArea);
         textMaster = findViewById(R.id.editTextMaster);
+        btnCloseFloat = findViewById(R.id.btnCloseFloat);
 
 
     }
@@ -62,6 +82,7 @@ public class Exit extends Activity implements EMDKManager.EMDKListener, Scanner.
         this.emdkManager = emdkManager;
         initBarcodeManager();
         initScanner();
+        getOrden();
     }
 
     @Override
@@ -184,11 +205,12 @@ public class Exit extends Activity implements EMDKManager.EMDKListener, Scanner.
                      sonidoError.start();
                      return;
                   }
-                  if(conexion.registrarSalida(usuario.getUsuarioNick(),result.substring(2))){
+                  if(conexion.registrarSalida(usuario.getUsuarioNick(),result)){
                       mensaje("Exit successfully registered", android.R.drawable.checkbox_on_background);
                       sonidoCorrecto.start();
                       textLocation.setText("");
                       textMaster.setText("");
+                      getOrden();
 
                     }
                 }
@@ -208,5 +230,113 @@ public class Exit extends Activity implements EMDKManager.EMDKListener, Scanner.
         dlgAlert.setIcon(iconoResId); // Ícono dinámico
         dlgAlert.create().show();
 
+    }
+    private void getOrden() {
+        try {
+            TableLayout tableDatos = findViewById(R.id.tableDatos);
+            tableDatos.removeAllViews(); // Limpia solo las filas de datos
+
+            List<Map<String, String>> ordenes = conexion.getDailyOrden();
+            int totalAsignados = 0; // Contador para Status = 1
+
+            for (Map<String, String> orden : ordenes) {
+                TableRow fila = new TableRow(this);
+                fila.setLayoutParams(new TableRow.LayoutParams(
+                        TableRow.LayoutParams.MATCH_PARENT,
+                        TableRow.LayoutParams.WRAP_CONTENT));
+                fila.setPadding(8, 8, 8, 8);
+
+                // Área
+                TextView txtArea = new TextView(this);
+                txtArea.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                txtArea.setGravity(Gravity.CENTER);
+                txtArea.setText(orden.get("Location"));
+                txtArea.setTextColor(Color.BLACK);
+                txtArea.setTextSize(14);
+                fila.addView(txtArea);
+
+                // Master
+                TextView txtMaster = new TextView(this);
+                txtMaster.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                txtMaster.setGravity(Gravity.CENTER);
+                txtMaster.setText(orden.get("Master"));
+                txtMaster.setTextColor(Color.BLACK);
+                txtMaster.setTextSize(14);
+                fila.addView(txtMaster);
+
+                // Estatus
+                TextView txtStatus = new TextView(this);
+                txtStatus.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                txtStatus.setGravity(Gravity.CENTER);
+
+                String rawStatus = orden.get("Status");
+                String statusClean = rawStatus != null ? rawStatus.trim() : "";
+
+                if ("2".equals(statusClean)) {
+                    txtStatus.setText("✅");
+                    txtStatus.setTextColor(Color.parseColor("#4CAF50")); // Verde
+                    totalAsignados++; // Incrementa si está asignado
+                } else {
+                    txtStatus.setText(""); // O usa "❌"
+                    txtStatus.setTextColor(Color.RED);
+                }
+
+                txtStatus.setTextSize(18);
+                fila.addView(txtStatus);
+
+                tableDatos.addView(fila);
+            }
+
+            // Actualiza el label con formato "asignados/total"
+            TextView lblTotales = findViewById(R.id.lblTotales);
+            if (totalAsignados >= ordenes.size()){
+
+                conexion.cerrarShippingOrder(usuario.getUsuarioNick());
+                mensaje("Shipping order closed successfully", android.R.drawable.checkbox_on_background);
+                if (scanner != null && scanner.isEnabled()) {
+                    try {
+                        scanner.disable(); // Esto detiene la lectura
+                    } catch (ScannerException e) {
+                        mensaje("Error deactivating scanner: " + e.getMessage(), android.R.drawable.ic_delete);
+                    }
+                }
+            }
+            lblTotales.setText("Total pallets: " + totalAsignados + "/" + ordenes.size());
+
+        } catch (Exception ex) {
+            mensaje(ex.getMessage(), android.R.drawable.ic_delete);
+        }
+    }
+    public void mensaje() {
+        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+        dlgAlert.setTitle("WGPL LOCATION");
+        dlgAlert.setMessage(" Are you sure you want close the shipping order?");
+
+
+        dlgAlert.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                try{
+                    //conexion.cerrarShippingOrder(usuario.getUsuarioNick());
+                    mensaje("Shipping order closed successfully", android.R.drawable.checkbox_on_background);
+                    getOrden();
+                    dialog.dismiss();
+
+
+                }catch (Exception ex){
+                    mensaje(ex.getMessage(),android.R.drawable.ic_delete);
+                }
+            }
+        });
+
+        dlgAlert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // Acción si el usuario cancela
+                Toast.makeText(getApplicationContext(), "Asignación cancelada", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        dlgAlert.setCancelable(false); // Opcional: evita que se cierre tocando fuera
+        dlgAlert.create().show();
     }
 }

@@ -25,7 +25,7 @@ import com.symbol.emdk.barcode.StatusData;
 import java.util.ArrayList;
 
 public class Pallets extends Activity implements EMDKManager.EMDKListener, Scanner.StatusListener, Scanner.DataListener  {
-    public String cadenaConexion;
+    public String cadenaConexion, planta ;
     public  Usuario usuario;
     Conexion conexion;
     private EMDKManager emdkManager = null;
@@ -44,7 +44,8 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
         iniciarElementos();
         usuario =(Usuario) intent.getSerializableExtra("Usuario");
         cadenaConexion = intent.getStringExtra("cadenaCon");
-        conexion = new Conexion(cadenaConexion);
+        planta = intent.getStringExtra("Planta");
+        conexion = new Conexion(cadenaConexion,planta);
         sonidoError = MediaPlayer.create(this, R.raw.error);
         sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);
         EMDKManager.getEMDKManager(getApplicationContext(), this);
@@ -286,7 +287,7 @@ public class Pallets extends Activity implements EMDKManager.EMDKListener, Scann
                     }
 
                     if (!conexion.plantaCorrecta(result, textLocation.getText().toString().trim())) {
-                        mensaje("This product does not belong to the 311D products", android.R.drawable.ic_delete);
+                        mensaje("This location is not for this pallet", android.R.drawable.ic_delete);
                         textMaster.setText("");
                         sonidoError.start();
                         return;

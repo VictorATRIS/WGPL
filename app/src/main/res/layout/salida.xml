@@ -1,86 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F4FEFF"
-    android:padding="20dp">
+    android:layout_height="match_parent">
 
-    <!-- Título del módulo -->
-    <TextView
-        android:id="@+id/txtNamemodule"
+    <!-- Layout principal -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#29B6F6"
-        android:elevation="6dp"
-        android:gravity="center"
-        android:padding="20dp"
-        android:text="✈️ To Ship 🚛"
-        android:textColor="#000000"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#F4FEFF"
+        android:padding="12dp">
 
-    <!-- Card principal con datos -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="10dp"
-        android:backgroundTint="#FFFFFF">
+        <!-- Título del módulo -->
+        <TextView
+            android:id="@+id/txtNamemodule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#57C2C0"
+            android:elevation="4dp"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="✈️ To Ship 🚛"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
+        <!-- Card principal con datos -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_marginTop="12dp">
 
-            <!-- Campo Location -->
-            <TextView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="🚚 Exit Scan"
-                android:textColor="#041F8E"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginBottom="4dp"/>
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                android:backgroundTint="#FFFFFF">
 
-            <EditText
-                android:id="@+id/editTextArea"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Scan exit label"
-                android:background="@android:drawable/edit_text"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:layout_marginBottom="16dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-            <!-- Campo Master -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="🔢 Master"
-                android:textColor="#041F8E"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginBottom="4dp"/>
+                    <!-- Label de totales -->
+                    <TextView
+                        android:id="@+id/lblTotales"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Total pallets: 0"
+                        android:textColor="#388E3C"
+                        android:textSize="14sp"
+                        android:textStyle="italic"
+                        android:layout_marginBottom="8dp"/>
 
-            <EditText
-                android:id="@+id/editTextMaster"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter master code"
-                android:background="@android:drawable/edit_text"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="#000000"
-                android:textSize="16sp"/>
+                    <!-- Campo Área -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="📍 Exit Label"
+                        android:textColor="#388E3C"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="2dp"/>
+
+                    <EditText
+                        android:id="@+id/editTextArea"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter exit label"
+                        android:background="@android:drawable/edit_text"
+                        android:inputType="text"
+                        android:padding="8dp"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <!-- Campo Master -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="🔢 Master"
+                        android:textColor="#388E3C"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="2dp"/>
+
+                    <EditText
+                        android:id="@+id/editTextMaster"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter master code"
+                        android:background="@android:drawable/edit_text"
+                        android:inputType="text"
+                        android:padding="8dp"
+                        android:textColor="#000000"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
+        <!-- Encabezado fijo separado -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#4EE0EB"
+            android:padding="8dp"
+            android:elevation="4dp"
+            android:layout_marginTop="8dp">
 
-</LinearLayout>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Área"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Master"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Estatus"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Scroll para las filas -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:layout_marginTop="4dp"
+            android:fillViewport="true"
+            android:scrollbars="vertical">
+
+            <TableLayout
+                android:id="@+id/tableDatos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:elevation="4dp"
+                android:padding="12dp">
+            </TableLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- Botón flotante “Close” -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnCloseFloat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="Close"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:backgroundTint="#57C26E" />
+</FrameLayout>
