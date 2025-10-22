@@ -137,6 +137,7 @@ public class Menu extends Activity {
       try {
           if(!conexion.existeOrden()) {
               btnShipping.setEnabled(false);
+              btnExit.setEnabled(false);
           }
       }catch (Exception ex) {
           conexion.mensaje(ex.getMessage(),"WGPL", android.R.drawable.ic_delete);

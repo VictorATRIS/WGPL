@@ -604,13 +604,13 @@ public class Conexion {
         return existe;
 
     }
-    public List<Map<String, String>> getDailyOrden() throws SQLException {
+    public List<Map<String, String>> getDailyOrden( String usuarioo) throws SQLException {
         List<Map<String, String>> lista = new ArrayList<>();
 
         try {
             initConexion();
 
-            String query = "EXEC SP_CTRL_WGPL_GET_DAILY_ORDER";
+            String query = "EXEC SP_CTRL_WGPL_GET_DAILY_ORDER '" + usuarioo.trim() + "'";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -619,6 +619,34 @@ public class Conexion {
                 fila.put("Location", rs.getString("Location"));
                 fila.put("Master", rs.getString("Master"));
                 fila.put("Status", rs.getString("Status"));
+                lista.add(fila);
+            }
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(), "WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+        } finally {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        }
+
+        return lista;
+    }
+    public List<Map<String, String>> getSendToQuality(String usuario) throws SQLException {
+        List<Map<String, String>> lista = new ArrayList<>();
+
+        try {
+            initConexion();
+
+            String query = "EXEC SP_CTRL_WGPL_READY_TO_REINSPECTION '" + usuario.trim() + "'";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                Map<String, String> fila = new HashMap<>();
+                fila.put("Location", rs.getString("Location"));
+                fila.put("Master", rs.getString("Master"));
+
                 lista.add(fila);
             }
 

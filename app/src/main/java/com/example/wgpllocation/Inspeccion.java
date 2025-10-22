@@ -5,10 +5,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.symbol.emdk.EMDKManager;
@@ -21,6 +28,8 @@ import com.symbol.emdk.barcode.StatusData;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, Scanner.StatusListener, Scanner.DataListener {
     public String cadenaConexion, planta;
@@ -46,6 +55,7 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
         sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);
         textLocation.setInputType(InputType.TYPE_NULL);
         textMaster.setInputType(InputType.TYPE_NULL);
+        getOrden();
     }
 
     private void iniciarElementos(){
@@ -215,6 +225,7 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
                         textLocation.setText("");
                         textMaster.setText("");
                         sonidoCorrecto.start();
+                        getOrden();
 
                     }
 
@@ -235,6 +246,75 @@ public class Inspeccion extends Activity  implements EMDKManager.EMDKListener, S
         dlgAlert.setIcon(iconoResId); // Ícono dinámico
         dlgAlert.create().show();
 
+    }
+    private void getOrden() {
+        try {
+            TableLayout tableDatos = findViewById(R.id.tableDatos);
+            tableDatos.removeAllViews();
+
+
+            TableRow encabezado = new TableRow(this);
+            encabezado.setLayoutParams(new TableRow.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT));
+            encabezado.setPadding(8, 8, 8, 8);
+
+            // Título Área
+            TextView tituloArea = new TextView(this);
+            tituloArea.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+            tituloArea.setGravity(Gravity.CENTER);
+            tituloArea.setText("Área");
+            tituloArea.setTypeface(null, Typeface.BOLD);
+            tituloArea.setTextColor(Color.BLACK);
+            tituloArea.setTextSize(16);
+            encabezado.addView(tituloArea);
+
+            // Título Master
+            TextView tituloMaster = new TextView(this);
+            tituloMaster.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+            tituloMaster.setGravity(Gravity.CENTER);
+            tituloMaster.setText("Master");
+            tituloMaster.setTypeface(null, Typeface.BOLD);
+            tituloMaster.setTextColor(Color.BLACK);
+            tituloMaster.setTextSize(16);
+            encabezado.addView(tituloMaster);
+
+            tableDatos.addView(encabezado); // Agrega encabezado antes de los datos
+
+            //  Cargar datos
+            List<Map<String, String>> ordenes = conexion.getSendToQuality(usuario.getUsuarioNick());
+
+            for (Map<String, String> orden : ordenes) {
+                TableRow fila = new TableRow(this);
+                fila.setLayoutParams(new TableRow.LayoutParams(
+                        TableRow.LayoutParams.MATCH_PARENT,
+                        TableRow.LayoutParams.WRAP_CONTENT));
+                fila.setPadding(8, 8, 8, 8);
+
+                // Área
+                TextView txtArea = new TextView(this);
+                txtArea.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                txtArea.setGravity(Gravity.CENTER);
+                txtArea.setText(orden.get("Location"));
+                txtArea.setTextColor(Color.BLACK);
+                txtArea.setTextSize(14);
+                fila.addView(txtArea);
+
+                // Master
+                TextView txtMaster = new TextView(this);
+                txtMaster.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                txtMaster.setGravity(Gravity.CENTER);
+                txtMaster.setText(orden.get("Master"));
+                txtMaster.setTextColor(Color.BLACK);
+                txtMaster.setTextSize(14);
+                fila.addView(txtMaster);
+
+                tableDatos.addView(fila);
+            }
+
+        } catch (Exception ex) {
+            mensaje(ex.getMessage(), android.R.drawable.ic_delete);
+        }
     }
 
 

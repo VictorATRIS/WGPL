@@ -299,7 +299,7 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
             TableLayout tableDatos = findViewById(R.id.tableDatos);
             tableDatos.removeAllViews(); // Limpia solo las filas de datos
 
-            List<Map<String, String>> ordenes = conexion.getDailyOrden();
+            List<Map<String, String>> ordenes = conexion.getDailyOrden(usuario.getUsuarioNick());
             int totalAsignados = 0; // Contador para Status = 1
 
             for (Map<String, String> orden : ordenes) {
