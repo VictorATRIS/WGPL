@@ -22,7 +22,7 @@
         android:textSize="22sp"
         android:textStyle="bold" />
 
-    <!-- Card principal con datos -->
+    <!-- Campo Master -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +37,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Campo Master -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -51,7 +50,7 @@
                 android:id="@+id/editTextMaster"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter master code"
+                android:hint="Scan master code"
                 android:background="@android:drawable/edit_text"
                 android:inputType="text"
                 android:padding="12dp"
@@ -60,15 +59,53 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Mensaje o error -->
-    <TextView
-        android:id="@+id/lbl_Error"
+    <!-- Encabezado tabla -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#D32F2F"
-        android:textStyle="italic"
-        android:textSize="16sp"
-        android:gravity="end"
-        android:text=""
-        android:layout_marginTop="24dp"/>
+        android:orientation="horizontal"
+        android:background="#4EE0EB"
+        android:padding="8dp"
+        android:elevation="4dp"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Serial"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Estatus"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Tabla scrollable -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:layout_marginTop="4dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical">
+
+        <TableLayout
+            android:id="@+id/tableDatosReturn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:elevation="4dp"
+            android:padding="12dp"/>
+    </ScrollView>
+
 </LinearLayout>

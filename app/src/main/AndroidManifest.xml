@@ -100,5 +100,10 @@
             android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
             >
         </activity>
+        <activity
+            android:name="com.example.wgpllocation.CambioMaster"    android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            >
+        </activity>
     </application>
 </manifest>

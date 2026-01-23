@@ -459,8 +459,8 @@ public class Conexion {
         try {
             initConexion(); // Inicia la conexión con la base de datos
 
-            // Ejecuta el stored procedure con los parámetros
-            String query = "SP_CTRL_WGPL_REGISTRA_DATOS_RECIBO_SALIDA_REINSPECCION'" + master.trim() + "', '" + tipo.trim() + "', '" + usuario + "'";
+            // Ejecuta el stored procedure con los parámetros                                                                     EL B solo es para que tronara al tracker viejito
+            String query = "SP_CTRL_WGPL_REGISTRA_DATOS_RECIBO_SALIDA_REINSPECCION'" + master.trim() + "', '" + tipo.trim() + "', '" + usuario + "','B'";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
 
             int resultado = preparedStatement.executeUpdate();
@@ -786,5 +786,63 @@ public class Conexion {
         }
         return registro;
     }
+
+        public boolean cambiaMaster( String usuario,String oldMaster, String newMaster) throws SQLException {
+            boolean registro = false;
+
+            try {
+                initConexion();
+
+                String query = "EXEC SP_CTRL_WGPL_CHANGE_MASTER '"
+                        + usuario.trim() + "', '"
+                        + oldMaster.trim() + "', '"
+                        + newMaster.trim() + "'";
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+
+                if (rs.next()) {
+                    int resultado = rs.getInt("Resultado");
+                    registro = resultado > 0;
+                }
+
+            } catch (SQLException ex) {
+                mensaje(ex.getMessage(), "WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+                return false;
+            } finally {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            }
+            return registro;
+        }
+    public List<Map<String, String>> getSerialBoxesPorMaster(String master) throws SQLException {
+        List<Map<String, String>> lista = new ArrayList<>();
+
+        try {
+            initConexion();
+
+            String query = "EXEC SP_CTRL_WGPL_GET_BOX_PER_PALLET '" + master.trim() + "'";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                Map<String, String> fila = new HashMap<>();
+                fila.put("Serial_Box", rs.getString("Serial_Box"));
+                fila.put("Status", rs.getString("Status"));
+
+                lista.add(fila);
+            }
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(), "WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+        } finally {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        }
+
+        return lista;
+    }
+
 
 }

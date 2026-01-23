@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 public class MenuCalidad extends Activity {
     private  Usuario usuario;
     public String cadenaConexion,planta;
-    private Button btnRecibo , btnRetorno, btnSort;
+    private Button btnRecibo , btnRetorno, btnSort, btnChangeMaster;
 
     @Override
     protected void onCreate( Bundle savedInstanceState) {
@@ -54,10 +54,22 @@ public class MenuCalidad extends Activity {
                 startActivity(intent2);
             }
         });
+        btnChangeMaster.setOnClickListener(new View.OnClickListener() {
+            Intent intent2 = null;
+            public void onClick(View view) {
+                intent2 = new Intent(MenuCalidad.this, CambioMaster.class);
+                intent2.putExtra("Usuario", usuario);
+                intent2.putExtra("cadenaCon",cadenaConexion);
+                intent2.putExtra("Planta",planta);
+                startActivity(intent2);
+            }
+        });
     }
     public void iniciarElementos(){
         btnRecibo = findViewById(R.id.btnEnvio);
         btnRetorno = findViewById(R.id.btnEmbarque);
         btnSort = findViewById(R.id.btnSortRequest);
+        btnChangeMaster = findViewById(R.id.btnRemplaceMaster);
+
     }
 }
