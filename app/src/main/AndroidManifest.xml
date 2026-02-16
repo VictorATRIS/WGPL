@@ -105,5 +105,10 @@
             android:theme="@android:style/Theme.NoTitleBar"
             >
         </activity>
+        <activity
+            android:name="com.example.wgpllocation.InventoryQty"    android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"
+            >
+        </activity>
     </application>
 </manifest>

@@ -2,19 +2,22 @@ package com.example.wgpllocation;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import java.sql.SQLException;
 
 public class Menu extends Activity {
     private  Usuario usuario;
     public String cadenaConexion, planta;
-    Button btnRecibo, btnInspeccion, btnDelete, btnShipping, btnExit;
+    Button btnRecibo, btnInspeccion, btnDelete, btnShipping, btnExit, btnInventory;
     Conexion conexion;
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
 
 
@@ -28,6 +31,12 @@ public class Menu extends Activity {
         cadenaConexion = intent.getStringExtra("cadenaCon");
         planta = intent.getStringExtra("Planta");
         bloqueaBotones();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        );
        conexion = new Conexion(cadenaConexion,planta);
         try {
             bloqueandoBotonesShipping();
@@ -89,6 +98,17 @@ public class Menu extends Activity {
                 startActivity(intent2);
             }
         });
+        btnInventory.setOnClickListener(new View.OnClickListener() {
+            Intent intent2 = null;
+            public void onClick(View view) {
+                intent2 = new Intent(Menu.this, InventoryQty.class);
+                intent2.putExtra("Usuario", usuario);
+                intent2.putExtra("cadenaCon",cadenaConexion);
+                intent2.putExtra("Planta",planta);
+                startActivity(intent2);
+            }
+        });
+
 
 
 
@@ -100,6 +120,7 @@ public class Menu extends Activity {
         btnDelete = findViewById(R.id.btnRetorno);
         btnShipping = findViewById(R.id.btnShipping);
         btnExit = findViewById(R.id.btnShippingExtra);
+        btnInventory = findViewById(R.id.btnInventoryQuantity);
 
     }
 

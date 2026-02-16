@@ -5,44 +5,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F4FEFF"
-    android:padding="20dp">
+    android:background="#F4FEFF">
 
-    <!-- Título del módulo -->
-    <TextView
-        android:id="@+id/txtNamemodule"
+    <!-- Encabezado moderno -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFCF58"
-        android:elevation="6dp"
-        android:gravity="center"
-        android:padding="20dp"
-        android:text="✅ Quality Received"
-        android:textColor="#000000"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:layout_height="65dp"
+        android:background="@drawable/bg_header_gradient_qa"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/txtNamemodule"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="✅ Quality Received"
+            android:textColor="#101010"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </FrameLayout>
 
     <!-- Card principal con datos -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="10dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
         android:backgroundTint="#FFFFFF">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="16dp">
 
             <!-- Campo Location -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="📍 Location"
-                android:textColor="#FF9800"
+                android:textColor="#1565C0"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:layout_marginBottom="4dp"/>
@@ -52,19 +58,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter location"
-                android:background="@android:drawable/edit_text"
+                android:background="@drawable/bg_edittext"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#000000"
                 android:textSize="16sp"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="12dp"/>
 
             <!-- Campo Master -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="🔢 Master"
-                android:textColor="#FF9800"
+                android:textColor="#1565C0"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:layout_marginBottom="4dp"/>
@@ -74,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter master code"
-                android:background="@android:drawable/edit_text"
+                android:background="@drawable/bg_edittext"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#000000"
@@ -89,8 +95,9 @@
         android:layout_height="wrap_content"
         android:textColor="#D32F2F"
         android:textStyle="italic"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:gravity="end"
         android:text=""
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"/>
 </LinearLayout>

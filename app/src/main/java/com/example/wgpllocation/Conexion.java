@@ -552,6 +552,30 @@ public class Conexion {
         return existe;
 
     }
+
+    public boolean necesitaReinspeccion2(String pallet) throws SQLException {
+        boolean existe = false;
+        try {
+            initConexion(); // Iniciamos la conexion de la base da datos
+            String query = "SP_CTRL_WGPL_VALIDA_SORTING_ALMACEN'" + pallet.trim() + "'";
+            ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
+            if (resultSet.next()) {
+                existe = true;
+            }
+
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+
+        }
+        return existe;
+
+    }
     public List<Map<String, String>> getDatosQr(String qr) throws SQLException {
         List<Map<String, String>> lista = new ArrayList<>();
 
@@ -843,6 +867,109 @@ public class Conexion {
 
         return lista;
     }
+    public boolean existeCaja(String caja) throws SQLException {
+        boolean existe = false;
+        try {
+            initConexion(); // Iniciamos la conexion de la base da datos
+            String query = "SP_CTRL_WGPL_EXISTS_SERIAL_BOX'" + caja.trim() + "'";
+            ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
+            if (resultSet.next()) {
+                existe = true;
+            }
 
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+
+        }
+        return existe;
+
+    }
+    public boolean cajaRegistrada(String serial) throws SQLException {
+        boolean existe = false;
+        try {
+            initConexion(); // Iniciamos la conexion de la base da datos
+            String query = "Select SERIAL_BOX from ERP_CTRL_WGPL_REAL_INVENTORY_QTY where 'S' + serial_box = '" + serial.trim() + "'";
+            ResultSet resultSet = comm.executeQuery(query);//Obtenemos los datos que traemos de la consulta y lo guardamos en un resultSet
+            if (resultSet.next()) {
+                existe = true;
+            }
+
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(),"WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (!conn.isClosed()) {
+                conn.close();
+            }
+
+        }
+        return existe;
+
+    }
+    public boolean registrarBox( String usuario,String serial, String master, String area) throws SQLException {
+        boolean registro = false;
+
+        try {
+            initConexion();
+
+            String query = "EXEC SP_CTRL_WGPL_SAVE_REAL_INVENTORY '"
+                    + master.trim() + "', '"
+                    + serial.trim() + "', '"
+                    + area.trim() + "'" + ", '"
+                    + usuario.trim() + "'";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                int resultado = rs.getInt("Resultado");
+                registro = resultado > 0;
+            }
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(), "WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+            return false;
+        } finally {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        }
+        return registro;
+    }
+    public List<Map<String, String>> getSerialMasterInventory(String master) throws SQLException {
+        List<Map<String, String>> lista = new ArrayList<>();
+
+        try {
+            initConexion();
+
+            String query = "EXEC SP_CTRL_WGPL_GET_BOX_PER_PALLET_PHYSICAL '" + master.trim() + "'";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                Map<String, String> fila = new HashMap<>();
+                fila.put("Serial_Box", rs.getString("Serial_Box"));
+                fila.put("Master", rs.getString("Master"));       // <-- nueva columna
+                fila.put("Location", rs.getString("Location"));   // <-- nueva columna
+
+                lista.add(fila);
+            }
+
+        } catch (SQLException ex) {
+            mensaje(ex.getMessage(), "WGPL LOCATION", android.R.drawable.ic_dialog_alert);
+        } finally {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        }
+
+        return lista;
+    }
 
 }

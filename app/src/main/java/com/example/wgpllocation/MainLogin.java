@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -35,12 +36,19 @@ public class MainLogin extends Activity {
     private String cadenaConexion, planta;
     private Button butIngresar ;
     private Conexion conexion ;
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         butIngresar = findViewById(R.id.butIngresar); //Hacemos referencia al boton del activity
         usuario = new Usuario();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        );
 
         //Hacemos la referencia a los campos de texto del activity
         textUsuario = findViewById(R.id.textUsuario2);

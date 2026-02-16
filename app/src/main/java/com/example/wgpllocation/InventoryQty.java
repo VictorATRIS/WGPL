@@ -5,14 +5,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -32,9 +30,10 @@ import com.symbol.emdk.barcode.StatusData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener,
-        Scanner.StatusListener, Scanner.DataListener {
+public class InventoryQty extends Activity implements EMDKManager.EMDKListener,
+        Scanner.StatusListener, Scanner.DataListener{
 
     public String cadenaConexion, planta;
     public Usuario usuario;
@@ -44,20 +43,19 @@ public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener,
     private BarcodeManager barcodeManager = null;
     private Scanner scanner = null;
 
-    private EditText textMaster;
-    private TableLayout tableDatosReturn;
+    private EditText textMaster, textArea;
+    private TableLayout tableDatos;
 
     private boolean masterEscaneado = false;
 
     MediaPlayer sonidoError, sonidoCorrecto = null;
     private List<Map<String, String>> serialBoxesEsperados = new ArrayList<>();
 
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.return_master);
+        setContentView(R.layout.inventory_qty);
 
         Intent intent = getIntent();
         iniciarElementos();
@@ -76,14 +74,14 @@ public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener,
         sonidoError = MediaPlayer.create(this, R.raw.error);
         sonidoCorrecto = MediaPlayer.create(this, R.raw.correct);
         textMaster.setInputType(InputType.TYPE_NULL);
-
-
     }
 
     private void iniciarElementos() {
         textMaster = findViewById(R.id.editTextMaster);
-        tableDatosReturn = findViewById(R.id.tableDatosReturn);
+        textArea = findViewById(R.id.editTextLocation);
+        tableDatos = findViewById(R.id.tableDatosReturn);
     }
+
 
     @Override
     public void onClosed() {
@@ -182,93 +180,93 @@ public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener,
     public void updateData(final String result) {
         runOnUiThread(() -> {
             try {
-                if (!masterEscaneado) {
-                    // Escaneo de Master
-                    textMaster.setText(result);
 
-                    // VALIDACIONES ORIGINALES
-                    if (!conexion.palletEnReinspeccionPerPallet(result)) {
-                        mensaje("No outbound to reinspection has been registered for this Master", android.R.drawable.ic_delete);
-                        sonidoError.start();
-                        return;
-                    }
-                    if (conexion.necesitaReinspeccion2(result)) {
-                        mensaje("This Master has pending reinspections", android.R.drawable.ic_delete);
-                         serialBoxesEsperados.clear();
-                         serialBoxesEsperados = conexion.getSerialBoxesPorMaster(result);
-                         mostrarSerialBoxesEnTabla(serialBoxesEsperados);
-                         masterEscaneado = false;
-                         textMaster.setText("");
-                        sonidoError.start();
-                        return;
-                    }
-                    if (conexion.palletRegistrosQA(result.trim(), "E")) {
-                        mensaje("No inbound has been registered for this pallet", android.R.drawable.ic_delete);
-                        sonidoError.start();
-                        return;
-                    }
-                    if (!conexion.palletRegistrosQA(result.trim(), "R")) {
-                        mensaje("An outbound has already been registered for this pallet", android.R.drawable.ic_delete);
-                        sonidoError.start();
-                        return;
-                    }
+                if (result.startsWith("L") && result.endsWith("T")) {
+                    String trimmedResult = result.substring(1, result.length() - 1);
 
-                    // Si pasa todas las validaciones, cargamos Serial Boxes
-                    serialBoxesEsperados.clear();
-                     serialBoxesEsperados = conexion.getSerialBoxesPorMaster(result);
-                    mostrarSerialBoxesEnTabla(serialBoxesEsperados);
-                    masterEscaneado = true;
-
-                } else {
-                    // Escaneo de Serial Box físico
-                    if (contieneSerialBox(result)) {
-                        actualizarEstatusSerial(result, "Checked");
-                       // sonidoCorrecto.start();
-
-                        // Verificar si todas están escaneadas
-                        if (todasSerialesEscaneadas()) {
-                            if (conexion.registraDatosReinspeccion(textMaster.getText().toString(),"R", usuario.getUsuarioNick())) {
-                                mensaje("Outbound successfully registered", android.R.drawable.checkbox_on_background);
-                                sonidoCorrecto.start();
-                                textMaster.setText("");
-                                masterEscaneado = false;
-                            }
-
-
-                        }
-
-                    } else {
-                        mensaje("Serial no corresponde al Master", android.R.drawable.ic_delete);
-                        sonidoError.start();
-                    }
+                    textArea.setText(trimmedResult);
+                    textMaster.setText("");
+                    tableDatos.removeAllViews();
+                    return;
                 }
+
+                String upperResult = result.toUpperCase();
+
+                if (upperResult.startsWith("4S")
+                        || upperResult.startsWith("S5V")
+                        || upperResult.startsWith("S6P")
+                        || upperResult.startsWith("S6L")
+                        || upperResult.startsWith("S6J")
+                        || upperResult.startsWith("S6M")
+                        || upperResult.startsWith("S52")) {
+
+
+                if (textArea.getText().toString().trim().isEmpty()) {
+                    mensaje("Set the location first", android.R.drawable.ic_delete);
+                    return;
+                }
+
+                if (textMaster.getText().toString().trim().isEmpty()) {
+                    textMaster.setText(result);
+                    getDatos(textMaster.getText().toString());
+                    return;
+                }
+
+                if (!conexion.existeCaja(result)){
+                    mensaje("The box does not exist", android.R.drawable.ic_delete);
+                    return;
+                }
+
+                if (conexion.cajaRegistrada(result)) {
+                    mensaje("Serial Box Was registered", android.R.drawable.ic_delete);
+                    return;
+                }
+                
+            if ( ! conexion.registrarBox(usuario.getUsuarioNick(), result, textMaster.getText().toString(),textArea.getText().toString())){
+                mensaje("Error registering box", android.R.drawable.ic_delete);
+                return ;
+                }
+            getDatos(textMaster.getText().toString());
+                }
+
+                else {
+                    mensaje("Incorrect data", android.R.drawable.ic_delete);
+                    sonidoError.start();
+
+                }
+
             } catch (Exception e) {
                 mensaje(e.getMessage(), android.R.drawable.ic_dialog_alert);
             }
         });
     }
-    private boolean contieneSerialBox(String serial) {
-        for (Map<String, String> fila : serialBoxesEsperados) {
-            if (fila.get("Serial_Box").equalsIgnoreCase(serial)) {
-                return true;
-            }
+
+    private void getDatos (String master) {
+        try {
+            serialBoxesEsperados.clear();
+            serialBoxesEsperados = conexion.getSerialMasterInventory(master);
+            mostrarSerialBoxesEnTabla(serialBoxesEsperados);
+        }catch (Exception ex) {
+            mensaje(ex.getMessage(), android.R.drawable.ic_delete);
         }
-        return false;
+
     }
 
-
     private void mostrarSerialBoxesEnTabla(List<Map<String, String>> seriales) {
-        // Limpia solo las filas de datos, no el encabezado (porque está fuera del TableLayout)
-        tableDatosReturn.removeAllViews();
+        // Limpia solo las filas de datos
+        tableDatos.removeAllViews();
 
         int index = 0;
         for (Map<String, String> filaData : seriales) {
             TableRow fila = new TableRow(this);
             fila.setPadding(8, 8, 8, 8);
+            String upperResult = textMaster.getText().toString().toUpperCase();
+            String sinPrimerosDos = upperResult.substring(2);
 
             // Alternar colores de fondo (efecto zebra)
-            if (index % 2 == 0) {
-                fila.setBackgroundColor(Color.parseColor("#F5F5F5"));
+            if (!filaData.get("Master").toUpperCase().equalsIgnoreCase(sinPrimerosDos)) {
+                fila.setBackgroundColor(Color.parseColor("#F87C63"));
+
             } else {
                 fila.setBackgroundColor(Color.parseColor("#E3F2FD"));
             }
@@ -276,51 +274,42 @@ public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener,
             // Columna Serial
             TextView txtSerial = new TextView(this);
             txtSerial.setText(filaData.get("Serial_Box"));
+            txtSerial.setTextColor(Color.BLACK);
             txtSerial.setGravity(Gravity.CENTER);
             txtSerial.setPadding(8, 8, 8, 8);
-            txtSerial.setLayoutParams(new TableRow.LayoutParams(
-                    0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            txtSerial.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
 
-            // Columna Estatus
-            TextView txtEstatus = new TextView(this);
-            String status = filaData.get("Status");
-            switch (status) {
-                case "1":
-                    txtEstatus.setText("OK");
-                    txtEstatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                    break;
-                case "0":
-                    txtEstatus.setText("Pendiente");
-                    txtEstatus.setTextColor(getResources().getColor(android.R.color.holo_orange_dark));
-                    break;
-                case "-1":
-                    txtEstatus.setText("Rechazado");
-                    txtEstatus.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                    break;
-                default:
-                    txtEstatus.setText("Desconocido");
-                    txtEstatus.setTextColor(getResources().getColor(android.R.color.darker_gray));
-                    break;
-            }
-            txtEstatus.setGravity(Gravity.CENTER);
-            txtEstatus.setPadding(8, 8, 8, 8);
-            txtEstatus.setLayoutParams(new TableRow.LayoutParams(
-                    0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            // Columna Master
+            TextView txtMaster = new TextView(this);
+            txtMaster.setText(filaData.get("Master"));
+            txtMaster.setGravity(Gravity.CENTER);
+            txtMaster.setTextColor(Color.BLACK);
+            txtMaster.setPadding(8, 8, 8, 8);
+            txtMaster.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+
+            // Columna Location
+            TextView txtLocation = new TextView(this);
+            txtLocation.setText(filaData.get("Location"));
+            txtLocation.setGravity(Gravity.CENTER);
+            txtLocation.setTextColor(Color.BLACK);
+            txtLocation.setPadding(8, 8, 8, 8);
+            txtLocation.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
 
             // Agregar columnas a la fila
             fila.addView(txtSerial);
-            fila.addView(txtEstatus);
+            fila.addView(txtMaster);
+            fila.addView(txtLocation);
 
             // Agregar fila a la tabla
-            tableDatosReturn.addView(fila);
+            tableDatos.addView(fila);
             index++;
         }
     }
 
     private void actualizarEstatusSerial(String serial, String nuevoEstatus) {
-        int childCount = tableDatosReturn.getChildCount();
+        int childCount = tableDatos.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            TableRow fila = (TableRow) tableDatosReturn.getChildAt(i);
+            TableRow fila = (TableRow) tableDatos.getChildAt(i);
             TextView txtSerial = (TextView) fila.getChildAt(0);
             TextView txtEstatus = (TextView) fila.getChildAt(1);
 
@@ -332,17 +321,7 @@ public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener,
         }
     }
 
-    private boolean todasSerialesEscaneadas() {
-        int childCount = tableDatosReturn.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            TableRow fila = (TableRow) tableDatosReturn.getChildAt(i);
-            TextView txtEstatus = (TextView) fila.getChildAt(1);
-            if (!"Checked".equals(txtEstatus.getText().toString())) {
-                return false;
-            }
-        }
-        return true;
-    }
+
 
     public void mensaje(String mensaje, int iconoResId) {
         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
@@ -351,4 +330,5 @@ public class SalidaCalidad extends Activity implements EMDKManager.EMDKListener,
         dlgAlert.setIcon(iconoResId);
         dlgAlert.create().show();
     }
+
 }

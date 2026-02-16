@@ -5,44 +5,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F4FEFF"
-    android:padding="20dp">
+    android:background="#F4FEFF">
 
-    <!-- Título del módulo -->
-    <TextView
-        android:id="@+id/txtNamemodule"
+    <!-- Encabezado moderno -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#7E57C2"
-        android:elevation="6dp"
-        android:gravity="center"
-        android:padding="20dp"
-        android:text="🔁 Replace master"
-        android:textColor="#FFFFFF"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:layout_height="65dp"
+        android:background="@drawable/bg_header_gradient_change"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/txtNamemodule"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="🔁 Replace Master"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </FrameLayout>
 
     <!-- Card principal con datos -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="10dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
         android:backgroundTint="#FFFFFF">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="16dp">
 
             <!-- Campo Old Master -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="🔁 Old Master"
-                android:textColor="#041F8E"
+                android:textColor="#1565C0"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:layout_marginBottom="4dp"/>
@@ -52,19 +58,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter old master code"
-                android:background="@android:drawable/edit_text"
+                android:background="@drawable/bg_edittext"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#000000"
                 android:textSize="16sp"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="12dp"/>
 
             <!-- Campo New Master -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="🆕 New Master"
-                android:textColor="#041F8E"
+                android:textColor="#1565C0"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:layout_marginBottom="4dp"/>
@@ -74,12 +80,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter new master code"
-                android:background="@android:drawable/edit_text"
+                android:background="@drawable/bg_edittext"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#000000"
                 android:textSize="16sp"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="12dp"/>
 
             <!-- Botón de confirmación -->
             <Button
@@ -89,7 +95,7 @@
                 android:text="✅ Confirm Replacement"
                 android:textSize="18sp"
                 android:textColor="#FFFFFF"
-                android:backgroundTint="#041F8E"
+                android:backgroundTint="#1565C0"
                 android:padding="12dp"
                 android:elevation="4dp"/>
         </LinearLayout>
@@ -99,7 +105,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="12dp"
         android:background="#CCCCCC" />
 
     <!-- Mensaje dinámico -->
@@ -107,11 +113,12 @@
         android:id="@+id/lbl_linea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"
         android:gravity="start"
         android:text=""
         android:textColor="#2F3FD3"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="italic" />
 
     <!-- Barra de progreso -->
@@ -123,5 +130,5 @@
         android:visibility="gone"
         android:layout_gravity="center"
         android:indeterminate="true"
-        android:layout_marginTop="12dp"/>
+        android:layout_marginTop="8dp"/>
 </LinearLayout>

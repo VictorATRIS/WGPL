@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
@@ -19,6 +20,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.symbol.emdk.EMDKManager;
@@ -41,17 +44,22 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
     private BarcodeManager barcodeManager = null;
     private Scanner scanner = null;
     private EditText textLocation, textMaster ;
-    private FloatingActionButton btnCloseFloat;
-
-    private TableLayout tableDatos;
+     private TableLayout tableDatos;
 
     MediaPlayer sonidoError,sonidoCorrecto = null;
 
-    protected void onCreate( Bundle savedInstanceState) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shipping);
         Intent intent =  getIntent();
         iniciarElementos();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        );
         usuario =(Usuario) intent.getSerializableExtra("Usuario");
         cadenaConexion = intent.getStringExtra("cadenaCon");
         planta = intent.getStringExtra("Planta");
@@ -63,14 +71,7 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
 
         textLocation.setInputType(InputType.TYPE_NULL);
         textMaster.setInputType(InputType.TYPE_NULL);
-        btnCloseFloat.setVisibility(View.GONE);
 
-        btnCloseFloat.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-               mensaje();
-            }
-        });
     }
 
     private void iniciarElementos(){
@@ -78,7 +79,7 @@ public class Shipping extends Activity implements EMDKManager.EMDKListener, Scan
         textLocation = findViewById(R.id.editTextArea);
         textMaster = findViewById(R.id.editTextMasterCode);
         tableDatos = findViewById(R.id.tableDatos);
-        btnCloseFloat = findViewById(R.id.btnCloseFloat);
+
 
 
     }
